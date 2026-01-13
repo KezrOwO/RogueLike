@@ -6,11 +6,14 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float movementspeed = 5f;
     [SerializeField] private float health = 10f;
+    [SerializeField] private float flashDuration = 0.3f;
     private Rigidbody2D body;
     private Vector2 input;
 
     private Vector2 lastMoveDirection;
 
+    private SpriteRenderer playerRenderer;
+    private Color originalColor;
 
     public Transform Aim;
     private bool isWalking = false; 
@@ -18,6 +21,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        playerRenderer = GetComponent<SpriteRenderer>();
+        originalColor = playerRenderer.color;
     }
 
 
@@ -75,14 +80,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-        public void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         Debug.Log("Player took " + damage + " damage.");
         health -= damage;
-        if(health <= 0)
+        
+        StartCoroutine(FlashRed());
+
+        if (health <= 0)
         {
             Destroy(gameObject);
             Debug.Log("Player has been destroyed.");
         }
+    }
+
+    private IEnumerator FlashRed()
+    {
+        Debug.Log("Player color changed to red.");
+        playerRenderer.color = Color.red;
+        yield return new WaitForSeconds(flashDuration);
+        playerRenderer.color = originalColor;
+        Debug.Log("Player color reset to original.");
     }
 }

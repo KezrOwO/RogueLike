@@ -12,16 +12,21 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float attackCooldown = 1f;
     [SerializeField] private float attackTimer = 1.5f;
     [SerializeField] private GameObject ProjectilEnemy;
+    [SerializeField] private float flashDuration = 0.3f;
     public Transform Aim;
     private Rigidbody2D rb;
     Transform target;
     Vector2 moveDirecton;
     private Vector2 lastAimDirection = Vector2.zero;
 
+    private SpriteRenderer enemyRenderer;
+    private Color originalColor;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        enemyRenderer = GetComponent<SpriteRenderer>();
+        originalColor = enemyRenderer.color;
     }
 
     // Start is called before the first frame update
@@ -63,7 +68,9 @@ public class Enemy : MonoBehaviour
 
         Debug.Log("Enemy took " + damage + " damage.");
         health -= damage;
-        if(health <= 0)
+
+        StartCoroutine(FlashRed());
+        if (health <= 0)
         {
             Destroy(gameObject);
         }
@@ -81,5 +88,14 @@ public class Enemy : MonoBehaviour
             Debug.Log("Création d'un projectile  ennemiy");
             Destroy(intProjectil, 2f);
         }
+    }
+
+    private IEnumerator FlashRed()
+    {
+        Debug.Log("Player color changed to red.");
+        enemyRenderer.color = Color.red;
+        yield return new WaitForSeconds(flashDuration);
+        enemyRenderer.color = originalColor;
+        Debug.Log("Player color reset to original.");
     }
 }
