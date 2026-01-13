@@ -6,15 +6,18 @@ public class RoomController : MonoBehaviour
 {
 
     [SerializeField] private List<GameObject> enemiesInRoom;
-    [SerializeField] private float numberOfEnemies = 2f;
+    [SerializeField] private int numberOfEnemies = 2;
     [SerializeField] private GameObject[] enemies;
     [SerializeField] private float roomWidth = 10f;
     [SerializeField] private float roomHeight = 10f;
 
+    private string[] states= {"Entering", "Fighting", "Cleared"};
+    private string currentState;
 
     private void Awake()
     {
 
+        currentState = states[0]; // Set initial state to "Entering"
 
         if (enemies == null || enemies.Length == 0)
         {
@@ -34,6 +37,11 @@ public class RoomController : MonoBehaviour
             GameObject enemyInstance = Instantiate(enemies[randomEnemyIndex], randomPosition, Quaternion.identity);
             enemyInstance.transform.parent = transform;
             enemiesInRoom.Add(enemyInstance);
+        }
+
+        if(numberOfEnemies > 0)
+        {
+            currentState = states[1]; // Change state to "Fighting" if there are enemies
         }
     }
 
@@ -63,6 +71,12 @@ public class RoomController : MonoBehaviour
         }
 
         numberOfEnemies = enemiesInRoom.Count;
-        Debug.Log("Enemies in room: " + numberOfEnemies);
+        
+        if(numberOfEnemies == 0 && currentState == states[1])
+        {
+            currentState = states[2]; // Change state to "Cleared" when all enemies are defeated
+            
+        }
+
     }
 }
