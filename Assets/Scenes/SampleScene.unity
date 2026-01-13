@@ -261,7 +261,7 @@ GameObject:
   - component: {fileID: 847895188}
   m_Layer: 0
   m_Name: 'Player '
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -278,6 +278,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e8028d96259f3848b1be098b9ef770c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementspeed: 5
+  health: 10
   Aim: {fileID: 1414347607}
 --- !u!50 &847895184
 Rigidbody2D:
@@ -497,6 +499,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6233569b4e6ffc42a2e080bfcde8c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  maxHealth: 10
+  speed: 1.5
+  damage: 1
+  fireForce: 5
+  attackCooldown: 1
+  attackTimer: 1.5
+  Projectil: {fileID: 4883206232022539269, guid: 6790bd0f8146b874bb2b317170967e85, type: 3}
+  Aim: {fileID: 358506100}
 --- !u!50 &1472881621
 Rigidbody2D:
   serializedVersion: 4

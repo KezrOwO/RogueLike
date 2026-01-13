@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private float movementspeed = 5f;
+    [SerializeField] private float movementspeed = 5f;
+    [SerializeField] private float health = 10f;
     private Rigidbody2D body;
     private Vector2 input;
 
@@ -71,6 +72,17 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 vector3 = Vector3.left * aimDirection.x + Vector3.down * aimDirection.y;
             Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+        }
+    }
+
+        public void TakeDamage(float damage)
+    {
+        Debug.Log("Player took " + damage + " damage.");
+        health -= damage;
+        if(health <= 0)
+        {
+            Destroy(gameObject);
+            Debug.Log("Player has been destroyed.");
         }
     }
 }
