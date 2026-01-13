@@ -6,18 +6,36 @@ public class RoomController : MonoBehaviour
 {
 
     [SerializeField] private List<GameObject> enemiesInRoom;
-    [SerializeField] private int numberOfEnemies = 2;
+    [SerializeField] private int enemySpawnCount = 2;
+    [SerializeField] private int enemyAliveCount;
     [SerializeField] private GameObject[] enemies;
-    [SerializeField] private float roomWidth = 10f;
-    [SerializeField] private float roomHeight = 10f;
+    [SerializeField] private float roomWidth = 28;
+    [SerializeField] private float roomHeight = 15f;
 
-    private string[] states= {"Entering", "Fighting", "Cleared"};
-    private string currentState;
+
+    private enum States {Entering, Fighting, Cleared}
+    private States currentState;
+
+    private Transform doors;
+    private Collider2D[] doorBlockers;  // Colliders solides qui bloquent
+    private Collider2D[] doorTriggers;  // Triggers pour les transitions
+
 
     private void Awake()
     {
 
-        currentState = states[0]; // Set initial state to "Entering"
+        doors = transform.Find("Doors");
+
+        if (doors == null)
+        {
+            Debug.LogError("Doors not found! Make sure there is a child GameObject named 'Doors'.");
+        }
+        else
+        {
+            SetupDoorColliders();
+        }
+
+        currentState = States.Entering; // Set initial state to "Entering"
 
         if (enemies == null || enemies.Length == 0)
         {
@@ -30,7 +48,7 @@ public class RoomController : MonoBehaviour
             enemiesInRoom = new List<GameObject>();
         }
 
-        for (int i = 0; i < numberOfEnemies; i++)
+        for (int i = 0; i < enemySpawnCount; i++)
         {
             int randomEnemyIndex = Random.Range(0, enemies.Length);
             Vector3 randomPosition = GetRandomPositionInRoom();
@@ -39,10 +57,43 @@ public class RoomController : MonoBehaviour
             enemiesInRoom.Add(enemyInstance);
         }
 
-        if(numberOfEnemies > 0)
+        Debug.Log($"Spawned {enemySpawnCount} enemies in the room.");
+
+        CloseDoors(); // Close doors when entering the room
+
+        // Change state to Fighting after spawning enemies
+        currentState = States.Fighting;
+
+
+    }
+
+    private void SetupDoorColliders()
+    {
+        List<Collider2D> blockers = new List<Collider2D>();
+        List<Collider2D> triggers = new List<Collider2D>();
+
+        // Parcourir chaque porte (DoorN, DoorS, DoorE, DoorW)
+        foreach (Transform door in doors)
         {
-            currentState = states[1]; // Change state to "Fighting" if there are enemies
+            Collider2D[] colliders = door.GetComponents<Collider2D>();
+            
+            foreach (Collider2D col in colliders)
+            {
+                if (col.isTrigger)
+                {
+                    triggers.Add(col);
+                }
+                else
+                {
+                    blockers.Add(col);
+                }
+            }
         }
+
+        doorBlockers = blockers.ToArray();
+        doorTriggers = triggers.ToArray();
+
+        Debug.Log($"Found {doorBlockers.Length} door blockers and {doorTriggers.Length} door triggers.");
     }
 
     private Vector3 GetRandomPositionInRoom()
@@ -62,7 +113,8 @@ public class RoomController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i = enemiesInRoom.Count - 1; i >= 0; i--)
+
+        for (int i = enemiesInRoom.Count - 1; i >= 0; i--)
         {
             if (enemiesInRoom[i] == null)
             {
@@ -70,13 +122,70 @@ public class RoomController : MonoBehaviour
             }
         }
 
-        numberOfEnemies = enemiesInRoom.Count;
-        
-        if(numberOfEnemies == 0 && currentState == states[1])
+        enemyAliveCount = enemiesInRoom.Count;
+
+        if (enemyAliveCount == 0 && currentState == States.Fighting)
         {
-            currentState = states[2]; // Change state to "Cleared" when all enemies are defeated
+            Debug.Log("All enemies defeated!");
+            changeStateCleared();
             
         }
 
     }
+
+    void changeStateCleared()
+    {
+        Debug.Log("Changing state to Cleared...");
+        currentState = States.Cleared;
+        openDoor();
+    }
+
+    void CloseDoors()
+    {
+        // Activer les colliders solides (bloquer le passage)
+        if (doorBlockers != null)
+        {
+            foreach (Collider2D blocker in doorBlockers)
+            {
+                blocker.enabled = true;
+            }
+        }
+
+        // Désactiver les triggers (pas de transition possible)
+        if (doorTriggers != null)
+        {
+            foreach (Collider2D trigger in doorTriggers)
+            {
+                trigger.enabled = false;
+            }
+        }
+
+        Debug.Log("Doors closed: blockers enabled, triggers disabled.");
+    }
+
+    void openDoor()
+    {
+        Debug.Log("Attempting to open doors...");
+        
+        // Désactiver les colliders solides (ouvrir le passage)
+        if (doorBlockers != null)
+        {
+            foreach (Collider2D blocker in doorBlockers)
+            {
+                blocker.enabled = false;
+            }
+        }
+
+        // Activer les triggers (autoriser les transitions)
+        if (doorTriggers != null)
+        {
+            foreach (Collider2D trigger in doorTriggers)
+            {
+                trigger.enabled = true;
+            }
+        }
+
+        Debug.Log("Room Cleared! Doors are now open: blockers disabled, triggers enabled.");
+    }
+
 }
