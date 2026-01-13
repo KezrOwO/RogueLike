@@ -14,14 +14,24 @@
 ---
 ## 📅 Planing du MVP 
 
-### Première itération
+### Première itération (fini)
 
 - Setup projet
 - Joueur + déplacement 
-### Deuxième itération 
+
+**Notes de fin** :
+- Déplacement fonctionelle, Objet joeur crée  
+- Rien de bloquant
+- Pas d'amélioration en vu
+### Deuxième itération (fini)
 
 - Attaque + projectiles
 - Dégâts
+
+**Notes de fin** : 
+- Attaques avec les flèches directionnelles, créations de projectiles 
+- Sytème de visée 
+- Système d'input de touches à revoir, mieux repartir le code   
 
 ### Troisième itération 
 
