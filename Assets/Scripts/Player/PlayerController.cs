@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 lastMoveDirection;
 
+
     public Transform Aim;
     private bool isWalking = false; 
 
@@ -25,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
         input.x = Input.GetAxis("Horizontal");
         input.y = Input.GetAxis("Vertical");
+
+        
     }
 
     private void FixedUpdate()
@@ -43,16 +46,31 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveY = Input.GetAxis("Vertical");
 
-        if((moveX == 0 &&  moveY == 0) && (input.x != 0 || input.y != 0))
+        Vector2 aimDirection = Vector2.zero;
+
+        
+
+        if (Input.GetKey(KeyCode.UpArrow))
         {
-            isWalking = false;
-            lastMoveDirection = input;
-            Vector3 vector3 = Vector3.left * lastMoveDirection.x + Vector3.down * lastMoveDirection.y;
-            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+            aimDirection = Vector2.up;
         }
-        else if(moveX !=0 || moveY != 0)
+        else if (Input.GetKey(KeyCode.DownArrow))
         {
-            isWalking=true;
+            aimDirection = Vector2.down;
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            aimDirection = Vector2.left;
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            aimDirection = Vector2.right;
+        }
+
+        if (aimDirection != Vector2.zero)
+        {
+            Vector3 vector3 = Vector3.left * aimDirection.x + Vector3.down * aimDirection.y;
+            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
         }
     }
 }
