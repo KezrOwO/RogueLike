@@ -16,18 +16,34 @@ public class Weapon : MonoBehaviour
         // Récupère le tag du projectile
         // Permet de différencier les projectiles ennemis et joueurs
 
-        // Si le projectile est joueur et touche un ennemi
-        if (collision.CompareTag("Enemy") && gameObject.CompareTag("Player")) 
+        // Si CE projectile est du joueur et touche un ennemi
+        if (gameObject.CompareTag("Player") && collision.CompareTag("Enemy")) 
         {
-            collision.GetComponent<Enemy>().TakeDamage(damagePlayer);
-            Destroy(gameObject);
+            Enemy enemy = collision.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damagePlayer);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("Enemy component not found on " + collision.gameObject.name);
+            }
         }
 
-        // Si le projectile est ennemi et touche le joueur
-        if (collision.CompareTag("Player") && gameObject.CompareTag("Enemy"))
+        // Si CE projectile est ennemi et touche le joueur
+        if (gameObject.CompareTag("Enemy") && collision.CompareTag("Player"))
         {
-            collision.GetComponent<PlayerController>().TakeDamage(damageEnemy);
-            Destroy(gameObject);
+            PlayerController player = collision.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(damageEnemy);
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogWarning("PlayerController component not found on " + collision.gameObject.name);
+            }
         }
     }
 }
