@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(float damage)
     {
 
-        Debug.Log("Enemy took " + damage + " damage.");
+       
         health -= damage;
 
         StartCoroutine(FlashRed());
@@ -85,17 +85,17 @@ public class Enemy : MonoBehaviour
             intProjectil.GetComponent<Renderer>().material.color = Color.red;
             intProjectil.tag = "Enemy";
             intProjectil.GetComponent<Rigidbody2D>().AddForce(-Aim.up * fireForce, ForceMode2D.Impulse);
-            Debug.Log("Création d'un projectile  ennemiy");
+  
             Destroy(intProjectil, 2f);
         }
     }
 
     private IEnumerator FlashRed()
     {
-        Debug.Log("Player color changed to red.");
+
         enemyRenderer.color = Color.red;
         yield return new WaitForSeconds(flashDuration);
         enemyRenderer.color = originalColor;
-        Debug.Log("Player color reset to original.");
+       
     }
 }

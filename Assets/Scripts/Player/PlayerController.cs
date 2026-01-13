@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementspeed = 5f;
     [SerializeField] private float health = 10f;
     [SerializeField] private float flashDuration = 0.3f;
+    private bool isDead = false;
     private Rigidbody2D body;
     private Vector2 input;
 
@@ -28,22 +30,34 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        ProccessInput();
+        if (!isDead)
+        {
+            ProccessInput();
 
-        input.x = Input.GetAxis("Horizontal");
-        input.y = Input.GetAxis("Vertical");
-
-        
+            input.x = Input.GetAxis("Horizontal");
+            input.y = Input.GetAxis("Vertical");
+        }
+        else
+        {
+            input = Vector2.zero;
+        }
     }
 
     private void FixedUpdate()
     {
-        body.velocity = input  * movementspeed;
-
-        if(isWalking)
+        if (!isDead)
         {
-            Vector3 vector3 = Vector3.left * input.x + Vector3.down * input.y;
-            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+            body.velocity = input * movementspeed;
+
+            if (isWalking)
+            {
+                Vector3 vector3 = Vector3.left * input.x + Vector3.down * input.y;
+                Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+            }
+        }
+        else
+        {
+            body.velocity = Vector2.zero;
         }
     }
 
@@ -82,24 +96,37 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        Debug.Log("Player took " + damage + " damage.");
+ 
         health -= damage;
         
         StartCoroutine(FlashRed());
 
         if (health <= 0)
         {
-            Destroy(gameObject);
-            Debug.Log("Player has been destroyed.");
+            isDead = true;
+            playerRenderer.enabled = false;
+            Debug.Log("Player is dead");
         }
     }
 
     private IEnumerator FlashRed()
     {
-        Debug.Log("Player color changed to red.");
+        
         playerRenderer.color = Color.red;
         yield return new WaitForSeconds(flashDuration);
         playerRenderer.color = originalColor;
-        Debug.Log("Player color reset to original.");
+        
+    }
+
+    void OnGUI()
+    {
+        if (isDead)
+        {
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 50;
+            style.normal.textColor = Color.white;
+            style.alignment = TextAnchor.MiddleCenter;
+            GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Game Over", style);
+        }
     }
 }

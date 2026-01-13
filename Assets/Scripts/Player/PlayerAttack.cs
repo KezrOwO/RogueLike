@@ -56,7 +56,7 @@ public class PlayerAttack : MonoBehaviour
             intProjectil.GetComponent<Renderer>().material.color = Color.blue;
             intProjectil.tag = "Player";
             intProjectil.GetComponent<Rigidbody2D>().AddForce(-Aim.up *  fireForce, ForceMode2D.Impulse);
-            Debug.Log("Création d'un projectile");
+            
             Destroy(intProjectil, 2f);
         }
     }

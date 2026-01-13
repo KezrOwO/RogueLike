@@ -39,6 +39,11 @@
 - Combat fonctionnel
 - Système de PV / mort
 
+**Notes de fin**
+
+- Ennemi qui suit le joueur et attaque , système de combat avec feedback de hit + mort d'un joueur écran de gameOver 
+- Vrai difficulté sur le feedback du joueur et ennemie + mort du joueur 
+- Améliorer le système de mort (avec cela HealthComponent Un OnDeath() qui notifie un GameManager Et le GameManager gère l’état global (GameOver, UI, reload, etc.))
 
 ### Quatrième itération 
 
