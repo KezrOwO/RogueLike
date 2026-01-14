@@ -1,69 +1,180 @@
 # MVP Jouable
 
-## ✅ Ce que le MVP doit contenir 
+## 📌 Objectif du MVP
 
-- Déplacement joueur 
-- Tir de projectiles
-- 1 Type d'ennemie
-- 2-3 salles enchainées
-- Mort du joueur 
-- Fin de run 
+Prouver la boucle de gameplay core et la structure technique :
+- Se déplacer
+- Attaquer
+- Combattre un ennemi
+- Progresser à travers plusieurs salles
+- Mourir et voir écran GameOver
 
-**Notes** : Sans items, sans boss, sans polish.
+**Hors MVP** : Items, boss, polish, équilibrage fin
 
 ---
-## 📅 Planing du MVP 
 
-### Première itération (fini)
+## ✅ Checklist MVP
 
-- Setup projet
-- Joueur + déplacement 
+- ✅ Déplacement joueur (8 directions)
+- ✅ Tir de projectiles
+- ✅ 1 type d'ennemi simple
+- ✅ Système de PV / mort (joueur + ennemi)
+- ✅ 2-3 salles enchaînées
+- ✅ Transitions entre salles (portes)
+- ✅ Écran GameOver
 
-**Notes de fin** :
-- Déplacement fonctionelle, Objet joeur crée  
-- Rien de bloquant
-- Pas d'amélioration en vu
-### Deuxième itération (fini)
+---
 
-- Attaque + projectiles
-- Dégâts
+## 📅 Planning des Itérations
 
-**Notes de fin** : 
-- Attaques avec les flèches directionnelles, créations de projectiles 
-- Sytème de visée 
-- Système d'input de touches à revoir, mieux repartir le code   
+### Itération 1 : Setup + Déplacement ✅
 
-### Troisième itération 
+**Objectif** : Fonder le projet et pouvoir se déplacer
 
-- Ennemi simple
-- Combat fonctionnel
-- Système de PV / mort
+**Tâches**
+- Organisation projet Unity (dossiers, structure)
+- PlayerController avec déplacement 8 directions
+- Caméra (follow ou fixe)
 
-**Notes de fin**
+**État** : ✅ Complétée
+- Déplacement fonctionnel
+- Objet joueur créé
 
-- Ennemi qui suit le joueur et attaque , système de combat avec feedback de hit + mort d'un joueur écran de gameOver 
-- Vrai difficulté sur le feedback du joueur et ennemie + mort du joueur 
-- Améliorer le système de mort (avec cela HealthComponent Un OnDeath() qui notifie un GameManager Et le GameManager gère l’état global (GameOver, UI, reload, etc.))
+---
 
-### Quatrième itération (fini) 
+### Itération 2 : Attaque + Projectiles + Dégâts ✅
 
-- Salles + transitions
+**Objectif** : Implémenter l'attaque de base
 
-**Notes de fin** : 
-- Créations de plusieurs + leur comportement + les transitions 
-- Bug sur le trigger des doors (réglé), difficulté sur les states 
-- Améliorer la qualité du code + refacto
+**Tâches**
+- Système de tir de projectile
+- Cooldown d'attaque
+- Collision projectile → ennemi
+- Système de dégâts
+- Visée en 4 directions
 
-### Cinquième itération 
+**État** : ✅ Complétée
+- Attaques avec les flèches directionnelles
+- Création de projectiles
+- Système de visée
 
-- Nettoyage
-- Bugs
-- Refacto légère
+**À revoir** : Architecture des inputs (mieux répartir le code)
 
-### Sixième itération 
+---
 
-- Build jouable
+### Itération 3 : Ennemi + Combat + PV/Mort ✅
 
---- 
+**Objectif** : Avoir un vrai combat contre un ennemi
 
-**Lien vers le README**: [Lien vers le README](README.md)
+**Tâches**
+- EnemyController avec IA basique (idle, poursuite, attaque)
+- Système de PV pour joueur et ennemi
+- Mort et respawn/GameOver
+- Feedback visuel de hit
+
+**État** : ✅ Complétée
+- Ennemi qui suit le joueur et attaque
+- Système de combat fonctionnel
+- Écran GameOver activé à la mort du joueur
+
+**Difficultés surmontées** : Feedback du joueur et ennemi, gestion de la mort
+**À améliorer** : HealthComponent avec OnDeath() → GameManager gère l'état global
+
+---
+
+### Itération 4 : Salles + Transitions ✅
+
+**Objectif** : Boucle de progression avec plusieurs salles
+
+**Tâches**
+- Création de salles préfabriquées
+- RoomController (gestion du contenu, spawning ennemis)
+- Système de portes (bloquées tant qu'ennemis vivants)
+- Transition entre salles
+
+**État** : ✅ Complétée
+- Création de plusieurs salles
+- Transitions fonctionnelles
+- Portes qui se débloquent
+
+**Bugs réglés** : Trigger des portes
+**À améliorer** : Qualité du code + refacto, architecture des états
+
+---
+
+### Itération 5 : Nettoyage + Bugs + Refacto Légère 🔄
+
+**Objectif** : Stabiliser et nettoyer le code avant build
+
+**Tâches**
+- Correction de bugs critiques
+- Refactoring léger (architecture, lisibilité)
+- Optimisation des systèmes existants
+- Tests de jouabilité
+
+**État** : 🔄 En cours
+
+---
+
+### Itération 6 : Build Jouable 📋
+
+**Objectif** : Préparer une version jouable et stable
+
+**Tâches**
+- Tests finaux complets
+- Build executables (Windows/Web)
+- Documentation pour lancer le jeu
+
+**État** : 📋 Prévue
+
+---
+
+## 🚀 Après le MVP
+
+Une fois le MVP stabilisé, les prochaines étapes post-MVP :
+
+### Post-MVP 1 : Items
+- HP up, Damage up, Speed up, Attack speed up
+- Spawn d'items après combats
+- Application d'effets au joueur
+- UI pour afficher les upgrades
+
+### Post-MVP 2 : Boss Simple
+- Ennemi plus tanky et patterns d'attaque spéciaux
+- Salle finale
+- Condition de victoire
+
+### Post-MVP 3 : Génération Procédurale
+- Génération dynamique de salles (au lieu de préfab fixes)
+- Layouts variés
+- Augmentation de la rejouabilité
+
+### Post-MVP 4 : Polissage UI + Feedback
+- Interface utilisateur complète
+- Menu principal, pausemenu
+- Effets visuels (VFX)
+- Effets sonores (SFX)
+
+---
+
+## 📊 Logique du MVP
+
+Le MVP minimal = **prouver que la boucle fonctionne** :
+
+```
+Spawn → Déplacement → Combat → Salle suivante → Mort/GameOver
+```
+
+C'est **suffisant** pour tester :
+- Les mécaniques de base
+- La structure technique
+- La courbe de jouabilité
+
+**C'est PAS le jeu fini** → items, variété, polish arrivent après.
+
+---
+
+## 🔗 Voir aussi
+
+- [README.md](README.md) : présentation générale + roadmap complète
+- Contrôles actuels : ZQSD pour se déplacer, Flèches pour attaquer

@@ -36,7 +36,7 @@ Le gameplay s'inspire de **The Binding of Isaac** pour la structure des salles e
 
 #### Salle & Génération
 - Plusieurs salles avec enchaînement
-- **Génération procédurale simple** : assemblage aléatoire de salles prédéfinies
+- **Prévue** : génération procédurale simple par assemblage de salles prédéfinies
 - Transitions via portes
 
 #### Items
@@ -88,135 +88,109 @@ Assets/
 ### Ressources
 - **ScriptableObjects** pour les statistiques et les items
 
-**Lien vers le MVP**: [Lien vers le MVP](MVP.md)
-
----
-
-## 📋 Phases de Développement
-
-### 🧱 Phase 0 — Setup du Projet (rapide)
-
-**Objectif** : partir propre
-
-**Tâches**
-- Création projet Unity 2D (URP non nécessaire)
-- Organisation des dossiers (voir structure ci-dessus)
-- Création d'une scène principale (MainScene)
-
-**Résultat attendu** : Projet structuré et prêt à développer
-
 
 
 ---
 
-### 🧍 Phase 1 — Joueur (fondation du jeu)
+## 🚧 État Actuel
 
-**Objectif** : se déplacer et mourir
+**MVP** : En cours (itération 4 complétée)
 
-**Tâches**
-- **PlayerController**
-  - Déplacement 8 directions
-  - Gestion vitesse
-- **Système de PV**
-  - Prise de dégâts
-  - Mort
-- **Caméra** simple (follow ou fixe)
-
-**Résultat attendu** : Tu peux te déplacer dans une scène vide et mourir.
-
+Pour le détail complet du planning et de l'avancement, voir [MVP.md](MVP.md)
 
 ---
 
-### 🔫 Phase 2 — Attaque & Combat de Base
+## 🎯 Itérations MVP
 
-**Objectif** : interagir avec le monde
+Le MVP définit le minimum pour prouver la boucle du jeu.
 
-**Tâches**
-- Tir de projectile
-- Cooldown d'attaque
-- Collision projectile → ennemi
-- Application des dégâts
+### Itération 1 : Setup + Déplacement
+- Organisation projet
+- Joueur et déplacement 8 directions
+- ✅ Complétée
 
-**Résultat attendu** : Tu tires, tu touches, quelque chose perd des PV.
+### Itération 2 : Attaque + Projectiles + Dégâts
+- Tir de projectiles
+- Système de dégâts
+- Visée et cooldown
+- ✅ Complétée
 
+### Itération 3 : Ennemi + Combat + PV/Mort
+- IA simple (poursuite & attaque)
+- Système de combat avec feedback
+- Mort du joueur et écran GameOver
+- ✅ Complétée
 
----
-
-### 👾 Phase 3 — Ennemi Simple
-
-**Objectif** : avoir un combat
-
-**Tâches**
-- **EnemyController**
-- **IA basique** :
-  - Idle
-  - Poursuite du joueur
-  - Attaque simple
-- PV ennemi + mort
-
-**Résultat attendu** : Un ennemi te poursuit, t'attaque, peut mourir.
-
-
----
-
-### 🗺️ Phase 4 — Salles & Transitions
-
-**Objectif** : boucle de progression
-
-**Tâches**
+### Itération 4 : Salles + Transitions
 - Création de salles préfabriquées
-- **RoomController**
-- **Portes** :
-  - Bloquées tant que les ennemis vivent
-  - S'ouvrent quand la salle est nettoyée
+- Portes (bloquées/ouvertes selon ennemis)
 - Transition entre salles
+- ✅ Complétée
 
-**Résultat attendu** : Tu passes de salle en salle.
+### Itération 5 : Nettoyage + Bugs + Refacto Légère
+- Amélioration qualité du code
+- Correction de bugs
+- Optimisation légère
+- 🔄 En cours
 
+### Itération 6 : Build Jouable
+- Préparation version jouable
+- Tests finaux
+- 📋 Prévue
 
 ---
 
-### 🧰 Phase 5 — Items & Progression
+## 🚀 Après le MVP
 
-**Objectif** : récompense
+Une fois le MVP terminé, la roadmap post-MVP prévoit :
 
-**Tâches**
-- ScriptableObject Item
+### Post-MVP 1 : Items
+- HP up, Damage up, Speed up, Attack speed up
+- Spawn d'items après combats
 - Application d'effets au joueur
-- Spawn d'item après combat
-- Feedback visuel simple
 
-**Résultat attendu** : Tu deviens plus fort au fil de la run.
+### Post-MVP 2 : Boss Simple
+- Ennemi plus tanky et agressif
+- Combat final de run
 
+### Post-MVP 3 : Génération Procédurale
+- Génération dynamique de salles
+- Variété de layouts
 
----
-
-### 👑 Phase 6 — Boss Simple & Fin de Run
-
-**Objectif** : avoir une fin
-
-**Tâches**
-- Ennemi plus tanky (boss)
-- Salle finale
-- Condition de victoire
-- Écran fin de run
-
-**Résultat attendu** : La boucle est complète.
+### Post-MVP 4 : Polissage UI + Feedback
+- Interface utilisateur propre
+- Effets visuels (VFX)
+- Effets sonores (SFX)
 
 ---
 
-## 📌 Notes Supplémentaires
+## 🎮 Contrôles
 
+- **Déplacement** : ZQSD
+- **Attaque** : Flèches directionnelles 
+- **Interagir/Avancer** : Entrée (transitions de salles)
 
-- Approche itérative : chaque phase ajoute une couche de gameplay
-- Focus sur les mécaniques avant le contenu
+---
+
+## 🔧 Comment lancer le projet
+
+1. Ouvrir le projet dans **Unity 2022+**
+2. Charger la scène **MainScene** (Assets/Scenes/)
+3. Appuyer sur Play
+
+---
+
+## 📋 Notes de Développement
+
+- Approche itérative : chaque itération ajoute une couche de gameplay
+- Focus sur les mécaniques avant le contenu/polish
 - ScriptableObjects pour faciliter la maintenabilité et l'équilibrage
+- MVP.md contient le planning détaillé et l'état d'avancement
 
 ---
-
 
 ## ✍️ Auteur 
 
 Projet réalisé par **Léo Gengembre**  
-BUT informatique - Parcours développement d’applications  
-Projet personnel orienté game programming 
+BUT informatique - Parcours développement d'applications  
+Projet personnel orienté game programming
