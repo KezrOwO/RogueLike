@@ -45,9 +45,14 @@
 - Vrai difficulté sur le feedback du joueur et ennemie + mort du joueur 
 - Améliorer le système de mort (avec cela HealthComponent Un OnDeath() qui notifie un GameManager Et le GameManager gère l’état global (GameOver, UI, reload, etc.))
 
-### Quatrième itération 
+### Quatrième itération (fini) 
 
 - Salles + transitions
+
+**Notes de fin** : 
+- Créations de plusieurs + leur comportement + les transitions 
+- Bug sur le trigger des doors (réglé), difficulté sur les states 
+- Améliorer la qualité du code + refacto
 
 ### Cinquième itération 
 
