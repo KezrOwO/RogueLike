@@ -20,6 +20,7 @@ public class RoomController : MonoBehaviour
     private Collider2D[] doorBlockers;  // Colliders solides qui bloquent
     private Collider2D[] doorTriggers;  // Triggers pour les transitions
 
+    public bool IsCleared => currentState == States.Cleared; 
 
     private void Awake()
     {
