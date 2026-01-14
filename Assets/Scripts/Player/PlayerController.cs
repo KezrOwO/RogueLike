@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
         {
             GUIStyle style = new GUIStyle();
             style.fontSize = 50;
-            style.normal.textColor = Color.white;
+            style.normal.textColor = Color.blue;
             style.alignment = TextAnchor.MiddleCenter;
             GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Game Over", style);
         }
