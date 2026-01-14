@@ -54,7 +54,7 @@ public class PlayerAttack : MonoBehaviour
             attackTimer = 0;
             GameObject intProjectil = Instantiate(Projectil, Aim.position, Aim.rotation); 
             intProjectil.GetComponent<Renderer>().material.color = Color.blue;
-            intProjectil.tag = "Player";
+            intProjectil.tag = "PlayerProjectil";
             intProjectil.GetComponent<Rigidbody2D>().AddForce(-Aim.up *  fireForce, ForceMode2D.Impulse);
             
             Destroy(intProjectil, 2f);

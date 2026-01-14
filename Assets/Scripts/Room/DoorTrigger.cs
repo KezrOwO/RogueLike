@@ -15,10 +15,13 @@ public class DoorTrigger : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         
-        if (!other.CompareTag("Player")) return;
+        if (!other.CompareTag("Player"))
+            return;
+        
 
-        if (roomManager != null && other.CompareTag("Player"));
+        if (roomManager != null)
             roomManager.TryGoToNextRoom();
+            
     }
 
     public void SetManager(RoomManager manager) => roomManager = manager;
