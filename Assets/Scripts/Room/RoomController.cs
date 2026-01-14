@@ -58,7 +58,7 @@ public class RoomController : MonoBehaviour
             enemiesInRoom.Add(enemyInstance);
         }
 
-        Debug.Log($"Spawned {enemySpawnCount} enemies in the room.");
+        
 
         CloseDoors(); // Close doors when entering the room
 
@@ -136,7 +136,7 @@ public class RoomController : MonoBehaviour
 
     void changeStateCleared()
     {
-        Debug.Log("Changing state to Cleared...");
+        
         currentState = States.Cleared;
         openDoor();
     }
@@ -161,12 +161,12 @@ public class RoomController : MonoBehaviour
             }
         }
 
-        Debug.Log("Doors closed: blockers enabled, triggers disabled.");
+        
     }
 
     void openDoor()
     {
-        Debug.Log("Attempting to open doors...");
+        
         
         // Désactiver les colliders solides (ouvrir le passage)
         if (doorBlockers != null)
@@ -186,7 +186,7 @@ public class RoomController : MonoBehaviour
             }
         }
 
-        Debug.Log("Room Cleared! Doors are now open: blockers disabled, triggers enabled.");
+        
     }
 
 }
