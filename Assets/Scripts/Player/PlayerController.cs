@@ -105,7 +105,10 @@ public class PlayerController : MonoBehaviour
         {
             isDead = true;
             playerRenderer.enabled = false;
+            
+
             Debug.Log("Player is dead");
+
         }
     }
 

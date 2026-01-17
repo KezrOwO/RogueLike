@@ -83,7 +83,7 @@ public class Enemy : MonoBehaviour
             attackTimer = 0;
             GameObject intProjectil = Instantiate(ProjectilEnemy, Aim.position, Aim.rotation);
             intProjectil.GetComponent<Renderer>().material.color = Color.red;
-            intProjectil.tag = "EnemyProjectil";
+            intProjectil.tag = "EnemyProjectile";
             intProjectil.GetComponent<Rigidbody2D>().AddForce(-Aim.up * fireForce, ForceMode2D.Impulse);
   
             Destroy(intProjectil, 2f);

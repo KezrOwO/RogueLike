@@ -1,10 +1,9 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RoomController : MonoBehaviour
 {
-
     [SerializeField] private List<GameObject> enemiesInRoom;
     [SerializeField] private int enemySpawnCount = 2;
     [SerializeField] private int enemyAliveCount;
@@ -12,31 +11,44 @@ public class RoomController : MonoBehaviour
     [SerializeField] private float roomWidth = 28;
     [SerializeField] private float roomHeight = 15f;
 
-
     private enum States {Entering, Fighting, Cleared}
     private States currentState;
 
     private Transform doors;
-    private Collider2D[] doorBlockers;  // Colliders solides qui bloquent
-    private Collider2D[] doorTriggers;  // Triggers pour les transitions
+    private Collider2D[] doorBlockers;
+    private Collider2D[] doorTriggers;
 
-    public bool IsCleared => currentState == States.Cleared; 
+    private bool hasSpawnedEnemies = false; 
+
+    public bool IsCleared => currentState == States.Cleared;
 
     private void Awake()
     {
-
         doors = transform.Find("Doors");
 
         if (doors == null)
         {
-            Debug.LogError("Doors not found! Make sure there is a child GameObject named 'Doors'.");
-        }
-        else
-        {
-            SetupDoorColliders();
+            Debug.LogError("Doors not found!");
+            return;
         }
 
-        currentState = States.Entering; // Set initial state to "Entering"
+        SetupDoorColliders();
+        currentState = States.Entering;
+
+    }
+
+    private void OnEnable()
+    {
+        CloseDoors();
+        
+        
+
+        // Block multiple spawns
+        if (hasSpawnedEnemies)
+        {
+            Debug.Log("Enemies already spawned, skipping OnEnable spawn.");
+            return;
+        }
 
         if (enemies == null || enemies.Length == 0)
         {
@@ -49,6 +61,7 @@ public class RoomController : MonoBehaviour
             enemiesInRoom = new List<GameObject>();
         }
 
+        
         for (int i = 0; i < enemySpawnCount; i++)
         {
             int randomEnemyIndex = Random.Range(0, enemies.Length);
@@ -56,16 +69,11 @@ public class RoomController : MonoBehaviour
             GameObject enemyInstance = Instantiate(enemies[randomEnemyIndex], randomPosition, Quaternion.identity);
             enemyInstance.transform.parent = transform;
             enemiesInRoom.Add(enemyInstance);
+            Debug.Log($"Spawned enemy {enemyInstance.name} at {randomPosition}");
         }
 
-        
-
-        CloseDoors(); // Close doors when entering the room
-
-        // Change state to Fighting after spawning enemies
+        hasSpawnedEnemies = true; 
         currentState = States.Fighting;
-
-
     }
 
     private void SetupDoorColliders()
@@ -105,11 +113,6 @@ public class RoomController : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-         
-    }
 
     // Update is called once per frame
     void Update()
@@ -125,11 +128,13 @@ public class RoomController : MonoBehaviour
 
         enemyAliveCount = enemiesInRoom.Count;
 
+        
         if (enemyAliveCount == 0 && currentState == States.Fighting)
         {
             Debug.Log("All enemies defeated!");
             changeStateCleared();
-            
+            enemiesInRoom.Clear();
+
         }
 
     }
@@ -152,7 +157,7 @@ public class RoomController : MonoBehaviour
             }
         }
 
-        // Désactiver les triggers (pas de transition possible)
+        // DÃ©sactiver les triggers (pas de transition possible)
         if (doorTriggers != null)
         {
             foreach (Collider2D trigger in doorTriggers)
@@ -168,7 +173,7 @@ public class RoomController : MonoBehaviour
     {
         
         
-        // Désactiver les colliders solides (ouvrir le passage)
+        // DÃ©sactiver les colliders solides (ouvrir le passage)
         if (doorBlockers != null)
         {
             foreach (Collider2D blocker in doorBlockers)

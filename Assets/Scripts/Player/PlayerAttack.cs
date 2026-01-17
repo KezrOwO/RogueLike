@@ -7,9 +7,9 @@ public class PlayerAttack : MonoBehaviour
 {
     public Transform Aim;
     public GameObject Projectil;
-    public float fireForce = 10f;
-    private float attackCooldown = 0.2f;
-    private float attackTimer = 0.5f;
+    [SerializeField] private float fireForce = 10f;
+    [SerializeField] private float attackCooldown = 0.2f;
+    [SerializeField] private float attackTimer = 0.5f;
 
     private Vector2 lastAimDirection = Vector2.zero;
 
@@ -49,7 +49,7 @@ public class PlayerAttack : MonoBehaviour
             attackTimer = 0;
             GameObject intProjectil = Instantiate(Projectil, Aim.position, Aim.rotation); 
             intProjectil.GetComponent<Renderer>().material.color = Color.blue;
-            intProjectil.tag = "PlayerProjectil";
+            intProjectil.tag = "PlayerProjectile";
             intProjectil.GetComponent<Rigidbody2D>().AddForce(-Aim.up *  fireForce, ForceMode2D.Impulse);
             
             Destroy(intProjectil, 2f);

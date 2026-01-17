@@ -17,7 +17,7 @@ public class Weapon : MonoBehaviour
         // Permet de différencier les projectiles ennemis et joueurs
 
         // Si CE projectile est du joueur et touche un ennemi
-        if (gameObject.CompareTag("PlayerProjectil") && collision.CompareTag("Enemy")) 
+        if (gameObject.CompareTag("PlayerProjectile") && collision.CompareTag("Enemy")) 
         {
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)
@@ -32,7 +32,7 @@ public class Weapon : MonoBehaviour
         }
 
         // Si CE projectile est ennemi et touche le joueur
-        if (gameObject.CompareTag("EnemyProjectil") && collision.CompareTag("Player"))
+        if (gameObject.CompareTag("EnemyProjectile") && collision.CompareTag("Player"))
         {
             PlayerController player = collision.GetComponent<PlayerController>();
             if (player != null)
