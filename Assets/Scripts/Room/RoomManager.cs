@@ -17,9 +17,13 @@ public class RoomManager : MonoBehaviour
 
     [SerializeField] private Camera mainCamera;
 
+    private GameManager gameManager;
+
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
+
         if (player == null)
         {
             Debug.LogError("RoomManager: Player reference is missing.");
@@ -54,7 +58,6 @@ public class RoomManager : MonoBehaviour
 
         if (next >= roomsInOrder.Count)
         {
-            Debug.Log("Run finished (last room cleared + door used).");
             isRunCompleted = true;
             return;
         }
@@ -67,6 +70,8 @@ public class RoomManager : MonoBehaviour
         // Desactivate current room
         if (index != currentRoomIndex && currentRoomIndex >= 0 && currentRoomIndex < roomsInOrder.Count)
             roomsInOrder[currentRoomIndex].SetActive(false);
+            gameManager.DestroyProjectil();
+
 
         currentRoomIndex = index;
 

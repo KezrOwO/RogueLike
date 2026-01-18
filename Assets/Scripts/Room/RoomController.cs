@@ -131,8 +131,7 @@ public class RoomController : MonoBehaviour
         
         if (enemyAliveCount == 0 && currentState == States.Fighting)
         {
-            Debug.Log("All enemies defeated!");
-            changeStateCleared();
+            changeStateCleared(); 
             enemiesInRoom.Clear();
 
         }

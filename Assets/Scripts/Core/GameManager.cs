@@ -4,11 +4,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static bool isGameOver = false; 
+    public static bool isGameOver = false;
+    GameObject[] projectilePlayer; 
 
-    
+
     public void TriggerGameOver()
     {
         isGameOver = true;
+    }
+
+    public void DestroyProjectil()
+    {
+        projectilePlayer = GameObject.FindGameObjectsWithTag("PlayerProjectile");
+        foreach (GameObject projectile in projectilePlayer)
+        {
+            Destroy(projectile);
+        }
     }
 }
