@@ -131,12 +131,12 @@ Le MVP définit le minimum pour prouver la boucle du jeu.
 - Amélioration qualité du code
 - Correction de bugs
 - Optimisation légère
-- 🔄 En cours
+- ✅ Complétée
 
 ### Itération 6 : Build Jouable
 - Préparation version jouable
 - Tests finaux
-- 📋 Prévue
+- ✅ Complétée
 
 ---
 
