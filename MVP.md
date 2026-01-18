@@ -112,7 +112,14 @@ Prouver la boucle de gameplay core et la structure technique :
 - Optimisation des systèmes existants
 - Tests de jouabilité
 
-**État** : 🔄 En cours
+**État** : ✅ Complétée  
+- Nettoyage terminé + corrections + refacto légère
+- Aucun bug bloquant détecté après tests
+
+**Bugs réglés**
+- GameOver : fin de toute action (inputs joueur + IA ennemis stoppées)
+- Projectiles : destruction automatique (évite accumulation)
+- DoorTrigger : les projectiles ne déclenchent plus les transitions
 
 ---
 
