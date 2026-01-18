@@ -110,8 +110,6 @@ public class PlayerController : MonoBehaviour
             {
                 gameManager.TriggerGameOver();
             }
-
-            Debug.Log("Player is dead");
         }
     }
 

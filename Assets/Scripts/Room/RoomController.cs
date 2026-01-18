@@ -69,7 +69,6 @@ public class RoomController : MonoBehaviour
             GameObject enemyInstance = Instantiate(enemies[randomEnemyIndex], randomPosition, Quaternion.identity);
             enemyInstance.transform.parent = transform;
             enemiesInRoom.Add(enemyInstance);
-            Debug.Log($"Spawned enemy {enemyInstance.name} at {randomPosition}");
         }
 
         hasSpawnedEnemies = true; 
@@ -101,8 +100,6 @@ public class RoomController : MonoBehaviour
 
         doorBlockers = blockers.ToArray();
         doorTriggers = triggers.ToArray();
-
-        Debug.Log($"Found {doorBlockers.Length} door blockers and {doorTriggers.Length} door triggers.");
     }
 
     private Vector3 GetRandomPositionInRoom()
