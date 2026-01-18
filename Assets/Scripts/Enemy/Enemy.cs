@@ -17,7 +17,6 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     Transform target;
     Vector2 moveDirecton;
-    private Vector2 lastAimDirection = Vector2.zero;
 
     private SpriteRenderer enemyRenderer;
     private Color originalColor;
@@ -39,11 +38,18 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(GameManager.isGameOver)
+        {
+            rb.velocity = Vector2.zero;
+            speed = 0;
+            return;
+        }
+
         if (target)
         {
             Vector3 direction = (target.position - transform.position).normalized;
             moveDirecton = direction;
-            lastAimDirection = direction;
 
             Vector3 vector = Vector3.left * direction.x + Vector3.down * direction.y;
             Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector);

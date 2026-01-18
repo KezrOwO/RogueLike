@@ -20,6 +20,13 @@ public class DoorTrigger : MonoBehaviour
         roomManager?.TryGoToNextRoom();
     }
 
+    private void Update()
+    {
+        if(GameManager.isGameOver)
+        {
+            return;
+        }
+    }
 
     public void SetManager(RoomManager manager) => roomManager = manager;
 }

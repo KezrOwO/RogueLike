@@ -17,6 +17,12 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(GameManager.isGameOver)
+        {
+            return;
+        }
+
         attackTimer += Time.deltaTime;
 
         if (Input.GetKey(KeyCode.UpArrow))
