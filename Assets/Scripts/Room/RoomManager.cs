@@ -12,6 +12,8 @@ public class RoomManager : MonoBehaviour
 
     private int currentRoomIndex = 0;
     private RoomController currentRoomController;
+    private int next => currentRoomIndex + 1;
+    public static bool isRunCompleted = false;
 
     [SerializeField] private Camera mainCamera;
 
@@ -48,11 +50,12 @@ public class RoomManager : MonoBehaviour
         if (requireRoomCleared && !currentRoomController.IsCleared)
             return;
 
-        int next = currentRoomIndex + 1;
+        
 
         if (next >= roomsInOrder.Count)
         {
             Debug.Log("Run finished (last room cleared + door used).");
+            isRunCompleted = true;
             return;
         }
 
@@ -106,4 +109,6 @@ public class RoomManager : MonoBehaviour
                 t.SetManager(this);
         }
     }
+
+
 }

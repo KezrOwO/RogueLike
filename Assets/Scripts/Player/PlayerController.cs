@@ -96,19 +96,22 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
- 
         health -= damage;
-        
+
         StartCoroutine(FlashRed());
 
         if (health <= 0)
         {
             isDead = true;
             playerRenderer.enabled = false;
-            
+            body.velocity = Vector2.zero;
+            GameManager gameManager = FindObjectOfType<GameManager>();
+            if (gameManager != null)
+            {
+                gameManager.TriggerGameOver();
+            }
 
             Debug.Log("Player is dead");
-
         }
     }
 
@@ -130,6 +133,15 @@ public class PlayerController : MonoBehaviour
             style.normal.textColor = Color.blue;
             style.alignment = TextAnchor.MiddleCenter;
             GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 25, 200, 50), "Game Over", style);
+        }
+
+        if(RoomManager.isRunCompleted)
+        {
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 50;
+            style.normal.textColor = Color.green;
+            style.alignment = TextAnchor.MiddleCenter;
+            GUI.Label(new Rect(Screen.width / 2 - 150, Screen.height / 2 - 25, 300, 50), "Run Completed!", style);
         }
     }
 }
