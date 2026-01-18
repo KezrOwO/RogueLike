@@ -132,7 +132,10 @@ Prouver la boucle de gameplay core et la structure technique :
 - Build executables (Windows/Web)
 - Documentation pour lancer le jeu
 
-**État** : 📋 Prévue
+**État** : ✅ Complétée  
+- Build Windows fonctionnel
+- Tests effectués hors Unity
+- Aucun bug bloquant détecté
 
 ---
 
