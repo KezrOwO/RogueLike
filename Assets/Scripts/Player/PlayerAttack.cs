@@ -8,7 +8,7 @@ public class PlayerAttack : MonoBehaviour
     public Transform Aim;
     public GameObject Projectil;
     [SerializeField] private float fireForce = 10f;
-    [SerializeField] private float attackCooldown = 0.2f;
+    public static float attackCooldown = 0.2f;
     [SerializeField] private float attackTimer = 0.5f;
 
     private Vector2 lastAimDirection = Vector2.zero;

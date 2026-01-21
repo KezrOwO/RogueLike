@@ -5,7 +5,7 @@ using UnityEngine;
 public class Weapon : MonoBehaviour
 {
 
-    [SerializeField] private float damagePlayer = 2f;
+    public static float damagePlayer = 2f;
     [SerializeField] private float damageEnemy = 1f;
 
     // Start is called before the first frame update

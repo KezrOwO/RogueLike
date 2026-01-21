@@ -94,6 +94,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void AddItem(ItemData item)
+    {
+        
+        switch (item.itemType)
+        {
+            case ItemData.ItemType.HpUp:
+                health += item.itemValue;
+                break;
+            case ItemData.ItemType.DamageUp:
+                Weapon.damagePlayer += item.itemValue;
+                break;
+            case ItemData.ItemType.SpeedUp:
+                movementspeed += item.itemValue;
+                break;
+            case ItemData.ItemType.AttackSpeedUp:
+                PlayerAttack.attackCooldown -= item.itemValue;
+                break;
+            default:
+                Debug.LogWarning("Unknown item type: " + item.itemType);
+                break;
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         health -= damage;

@@ -8,6 +8,7 @@ public class RoomController : MonoBehaviour
     [SerializeField] private int enemySpawnCount = 2;
     [SerializeField] private int enemyAliveCount;
     [SerializeField] private GameObject[] enemies;
+    [SerializeField] private GameObject itemPickUpPrefab;
     [SerializeField] private float roomWidth = 28;
     [SerializeField] private float roomHeight = 15f;
 
@@ -130,9 +131,28 @@ public class RoomController : MonoBehaviour
         {
             changeStateCleared(); 
             enemiesInRoom.Clear();
-
+            spawnItemPickUp();
         }
 
+    }
+
+    void spawnItemPickUp()
+    {
+        Transform itemSpawn = transform.Find("ItemSpawn");
+        Debug.Log("Spawning item pickup at: " + itemSpawn);
+        if (itemSpawn != null && itemPickUpPrefab != null)
+        {
+            GameObject item = Instantiate(itemPickUpPrefab, itemSpawn.position, Quaternion.identity);
+            item.transform.parent = transform;
+            Debug.Log("Item pickup spawned.");
+        }
+        else
+        {
+            if (itemSpawn == null)
+                Debug.LogError("ItemSpawn transform not found in room!");
+            if (itemPickUpPrefab == null)
+                Debug.LogError("ItemPickUp prefab not assigned in Inspector!");
+        }
     }
 
     void changeStateCleared()
