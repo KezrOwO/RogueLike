@@ -8,17 +8,26 @@ public class PlayerAttack : MonoBehaviour
     public Transform Aim;
     public GameObject Projectil;
     [SerializeField] private float fireForce = 10f;
-    public static float attackCooldown = 0.2f;
+    [SerializeField] private float attackCooldown = 0.2f; 
     [SerializeField] private float attackTimer = 0.5f;
+    [SerializeField] private float minAttackCooldown = 0.1f;
+    [SerializeField] private float maxAttackCooldown = 1f;
 
     private Vector2 lastAimDirection = Vector2.zero;
 
+    // Méthode publique pour modifier attackCooldown
+    public void ModifyAttackCooldown(float value)
+    {
+        attackCooldown -= value;
+        attackCooldown = Mathf.Clamp(attackCooldown, minAttackCooldown, maxAttackCooldown);
+    }
 
     // Update is called once per frame
     void Update()
     {
+        attackCooldown = Mathf.Clamp(attackCooldown, minAttackCooldown, maxAttackCooldown);
 
-        if(GameManager.isGameOver)
+        if (GameManager.isGameOver)
         {
             return;
         }
@@ -50,7 +59,8 @@ public class PlayerAttack : MonoBehaviour
 
     void OnShoot()
     {
-        if(attackTimer > attackCooldown)
+        
+        if(attackTimer > attackCooldown )
         {
             attackTimer = 0;
             GameObject intProjectil = Instantiate(Projectil, Aim.position, Aim.rotation); 

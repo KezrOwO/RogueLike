@@ -18,13 +18,16 @@ public class PlayerController : MonoBehaviour
     private Color originalColor;
 
     public Transform Aim;
-    private bool isWalking = false; 
+    private bool isWalking = false;
+    
+    private PlayerAttack playerAttack; // Référence au composant PlayerAttack
 
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         playerRenderer = GetComponent<SpriteRenderer>();
         originalColor = playerRenderer.color;
+        playerAttack = GetComponent<PlayerAttack>(); // Récupérer le composant
     }
 
 
@@ -109,7 +112,10 @@ public class PlayerController : MonoBehaviour
                 movementspeed += item.itemValue;
                 break;
             case ItemData.ItemType.AttackSpeedUp:
-                PlayerAttack.attackCooldown -= item.itemValue;
+                if (playerAttack != null)
+                {
+                    playerAttack.ModifyAttackCooldown(item.itemValue);
+                }
                 break;
             default:
                 Debug.LogWarning("Unknown item type: " + item.itemType);

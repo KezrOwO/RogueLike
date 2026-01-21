@@ -5,7 +5,6 @@ using UnityEngine;
 public class ItemPickUp : MonoBehaviour
 {
     [SerializeField] private List<ItemData> possiblesDrops;
-    [SerializeField] private Vector3 itemOffset = new Vector3(0, 0.5f, 0); // Offset pour afficher l'item au-dessus
     private ItemData selectedItem; // Stocke l'item sélectionné
     private GameObject itemVisual; // Référence à l'objet visuel de l'item
 
