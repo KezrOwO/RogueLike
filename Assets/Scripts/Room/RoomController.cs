@@ -139,12 +139,10 @@ public class RoomController : MonoBehaviour
     void spawnItemPickUp()
     {
         Transform itemSpawn = transform.Find("ItemSpawn");
-        Debug.Log("Spawning item pickup at: " + itemSpawn);
         if (itemSpawn != null && itemPickUpPrefab != null)
         {
             GameObject item = Instantiate(itemPickUpPrefab, itemSpawn.position, Quaternion.identity);
             item.transform.parent = transform;
-            Debug.Log("Item pickup spawned.");
         }
         else
         {

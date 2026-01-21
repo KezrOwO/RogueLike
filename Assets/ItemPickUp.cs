@@ -5,29 +5,28 @@ using UnityEngine;
 public class ItemPickUp : MonoBehaviour
 {
     [SerializeField] private List<ItemData> possiblesDrops;
+    [SerializeField] private Vector3 itemOffset = new Vector3(0, 0.5f, 0); // Offset pour afficher l'item au-dessus
+    private ItemData selectedItem; // Stocke l'item sélectionné
+    private GameObject itemVisual; // Référence à l'objet visuel de l'item
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Collision detected with: " + collision.gameObject.name);
+       
         if (collision.CompareTag("Player"))
         {
             PlayerController player = collision.GetComponent<PlayerController>();
             if (player != null)
             {
-                if (possiblesDrops != null && possiblesDrops.Count > 0)
+                if (selectedItem != null)
                 {
-                    // Sélectionne un item aléatoire dans la liste (25% de chance pour chaque item si vous en avez 4)
-                    int randomIndex = Random.Range(0, possiblesDrops.Count);
-                    ItemData selectedItem = possiblesDrops[randomIndex];
-                    
                     player.AddItem(selectedItem);
-                    Debug.Log("Picked up item: " + selectedItem.itemName);
+                    
                     Destroy(gameObject);
                 }
                 else
                 {
-                    Debug.LogWarning("possiblesDrops list is empty or null!");
+                    Debug.LogWarning("No item was selected!");
                 }
             }
             else
@@ -37,15 +36,43 @@ public class ItemPickUp : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+        if (possiblesDrops == null || possiblesDrops.Count == 0)
+        {
+            Debug.LogWarning("possiblesDrops list is empty or null on Awake!");
+            return;
+        }
+        selectedItem = selectRandomItem();
+        showItem(selectedItem);
     }
 
-    // Update is called once per frame
-    void Update()
+    void showItem(ItemData item)
     {
+        // Récupérer l'objet "Item" existant dans les enfants
+        itemVisual = transform.Find("Item")?.gameObject;
         
+        if (itemVisual == null)
+        {
+            Debug.LogError("Aucun objet enfant nommé 'Item' trouvé dans le prefab!");
+            return;
+        }
+        
+        // Configurer le sprite sur le SpriteRenderer existant
+        SpriteRenderer spriteRenderer = itemVisual.GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = item.itemIcon;
+            spriteRenderer.sortingOrder = 1;
+            itemVisual.transform.localScale = new Vector3(7.5f, 7.5f, 1f);
+        }
+        
+       
+    }
+
+    ItemData selectRandomItem()
+    {
+        int randomIndex = Random.Range(0, possiblesDrops.Count);
+        return possiblesDrops[randomIndex];
     }
 }
