@@ -148,12 +148,12 @@ Une fois le MVP terminé, la roadmap post-MVP prévoit :
 - HP up, Damage up, Speed up, Attack speed up
 - Spawn d'items après combats
 - Application d'effets au joueur
-- 🔄 En cours 
+- ✅ Complétée 
 
 ### Post-MVP 2 : Boss Simple
 - Ennemi plus tanky et agressif
 - Combat final de run
-- 📋 Prévue
+- 🔄 En cours 
 
 ### Post-MVP 3 : Génération Procédurale
 - Génération dynamique de salles
