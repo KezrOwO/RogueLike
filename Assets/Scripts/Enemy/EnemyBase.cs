@@ -6,12 +6,12 @@ public class EnemyBase : MonoBehaviour
 {
 
     [SerializeField] protected float health = 10f;
-    [SerializeField] private float speed = 1.5f;
-    [SerializeField] private float fireForce = 5f;
-    [SerializeField] private float attackCooldown = 1f;
-    [SerializeField] private float attackTimer = 1.5f;
-    [SerializeField] private GameObject ProjectilEnemy;
-    [SerializeField] private float flashDuration = 0.3f;
+    [SerializeField] protected float speed = 1.5f;
+    [SerializeField] protected float fireForce = 5f;
+    [SerializeField] protected float attackCooldown = 1f;
+    [SerializeField] protected float attackTimer = 1.5f;
+    [SerializeField] protected GameObject ProjectilEnemy;
+    [SerializeField] protected float flashDuration = 0.3f;
 
     public Transform Aim;
     private Rigidbody2D rb;
@@ -40,17 +40,14 @@ public class EnemyBase : MonoBehaviour
         if (GameManager.isGameOver)
         {
             rb.velocity = Vector2.zero;
-            speed = 0;
             return;
         }
 
         if (target)
         {
-            Vector3 direction = (target.position - transform.position).normalized;
-            moveDirecton = direction;
+            HandleMovement(target);
+            HandleAim();
 
-            Vector3 vector = Vector3.left * direction.x + Vector3.down * direction.y;
-            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector);
         }
 
         OnShoot();
@@ -60,7 +57,7 @@ public class EnemyBase : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (target)
+        if (!GameManager.isGameOver && target)
         {
             rb.velocity = new Vector2(moveDirecton.x, moveDirecton.y) * speed;
         }
@@ -77,11 +74,16 @@ public class EnemyBase : MonoBehaviour
         StartCoroutine(FlashRed());
         if (health <= 0)
         {
-            Destroy(gameObject);
+            OnDeath();
         }
     }
 
-    private void OnShoot()
+    protected virtual void OnDeath()
+    {
+        Destroy(gameObject);
+    }
+
+    protected virtual void OnShoot()
     {
         if (attackTimer > attackCooldown)
         {
@@ -93,6 +95,19 @@ public class EnemyBase : MonoBehaviour
 
             Destroy(intProjectil, 2f);
         }
+    }
+
+    protected virtual void HandleMovement(Transform target)
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        moveDirecton = direction;
+    }
+
+    protected virtual void HandleAim()
+    {
+        Vector3 direction = (target.position - transform.position).normalized;
+        Vector3 vector = Vector3.left * direction.x + Vector3.down * direction.y;
+        Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector);
     }
 
     private IEnumerator FlashRed()
