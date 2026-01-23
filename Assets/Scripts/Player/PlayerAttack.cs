@@ -34,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
 
         attackTimer += Time.deltaTime;
 
+        // Mettre à jour la direction AVANT de tirer
         if (Input.GetKey(KeyCode.UpArrow))
         {
             lastAimDirection = Vector2.up;
@@ -51,10 +52,16 @@ public class PlayerAttack : MonoBehaviour
             lastAimDirection = Vector2.right;
         }
 
+        // Mettre à jour la rotation de l'Aim immédiatement
+        if (lastAimDirection != Vector2.zero)
+        {
+            Vector3 vector3 = Vector3.left * lastAimDirection.x + Vector3.down * lastAimDirection.y;
+            Aim.rotation = Quaternion.LookRotation(Vector3.forward, vector3);
+        }
+
+        // Tirer APRÈS avoir mis à jour la direction ET la rotation
         if (lastAimDirection != Vector2.zero && (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow)))
             OnShoot();
-
-
     }
 
     void OnShoot()
