@@ -19,7 +19,12 @@ public class Weapon : MonoBehaviour
         // Si CE projectile est du joueur et touche un ennemi
         if (gameObject.CompareTag("PlayerProjectile") && collision.CompareTag("Enemy")) 
         {
-            Enemy enemy = collision.GetComponent<Enemy>();
+            EnemyBase enemy = collision.GetComponent<EnemyBase>();
+            if (enemy == null)
+            {
+                enemy = collision.GetComponentInParent<EnemyBase>();
+            }
+            
             if (enemy != null)
             {
                 enemy.TakeDamage(damagePlayer);
@@ -27,7 +32,7 @@ public class Weapon : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Enemy component not found on " + collision.gameObject.name);
+                Debug.LogWarning("EnemyBase component not found on " + collision.gameObject.name);
             }
         }
 

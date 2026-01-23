@@ -1484,8 +1484,8 @@ MonoBehaviour:
   enemySpawnCount: 2
   enemyAliveCount: 0
   enemies:
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
   itemPickUpPrefab: {fileID: 4736692766497755229, guid: 4e8e2475c1f6f7d4fbf22b61a5f8131f, type: 3}
   roomWidth: 10
   roomHeight: 10
@@ -3530,10 +3530,10 @@ MonoBehaviour:
   enemySpawnCount: 4
   enemyAliveCount: 0
   enemies:
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
   itemPickUpPrefab: {fileID: 4736692766497755229, guid: 4e8e2475c1f6f7d4fbf22b61a5f8131f, type: 3}
   roomWidth: 10
   roomHeight: 10
@@ -4124,9 +4124,9 @@ MonoBehaviour:
   enemySpawnCount: 3
   enemyAliveCount: 0
   enemies:
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
-  - {fileID: 2169319211676482999, guid: 76a95d801084b5f47baa379500703a03, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
   itemPickUpPrefab: {fileID: 4736692766497755229, guid: 4e8e2475c1f6f7d4fbf22b61a5f8131f, type: 3}
   roomWidth: 10
   roomHeight: 10
