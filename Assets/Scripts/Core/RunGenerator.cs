@@ -24,7 +24,7 @@ public class RunGenerator : MonoBehaviour
         Debug.Log("RunGenerator: Generating run with " + n + " normal rooms.");
         if (runConfig.AllowDuplicateRooms)
         {
-            for (int i = 1; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 // Correction : choisir un prefab individuel dans la liste
                 if (runConfig.RoomPrefabs != null && runConfig.RoomPrefabs.Count > 0)
