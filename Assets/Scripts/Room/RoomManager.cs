@@ -51,9 +51,6 @@ public class RoomManager : MonoBehaviour
         SpawnRoom(runSequence[0]);
         TeleportPlayerToSpawn();    
         WireDoorTriggers();
-
-        // Log pour vérifier la position après le délai
-        StartCoroutine(LogPlayerPositionAfterDelay(0.2f));
     }
 
     public void LoadNextRoom()
@@ -93,8 +90,6 @@ public class RoomManager : MonoBehaviour
         WireDoorTriggers();
         isTransitioning = false;
 
-        // Log pour vérifier la position après le délai
-        StartCoroutine(LogPlayerPositionAfterDelay(0.2f));
     }
 
     private void SpawnRoom(GameObject roomPrefab)
@@ -129,25 +124,20 @@ public class RoomManager : MonoBehaviour
             return;
 
         Transform spawn = currentRoomInstance.transform.Find("PlayerSpawn");
-        Debug.Log($"PlayerSpawn world pos: {spawn.position} local: {spawn.localPosition}");
         if (spawn == null)
         {
             Debug.LogWarning($"RoomManager: PlayerSpawn not found in {currentRoomInstance.name}");
             return;
         }
-
-        Debug.Log($"RoomManager: AVANT TP - Player position: {player.position}, PlayerSpawn target: {spawn.position}");
         
         // SOLUTION : Utiliser le Rigidbody2D pour téléporter proprement
         Rigidbody2D playerRb = player.GetComponent<Rigidbody2D>();
         if (playerRb != null)
         {
-            Debug.Log("RoomManager: Rigidbody2D trouvé sur le joueur.");
             // Réinitialiser la vélocité pour éviter tout mouvement résiduel
             playerRb.velocity = Vector2.zero;
             // Utiliser MovePosition pour déplacer via le Rigidbody2D
             playerRb.position = spawn.position;
-            Debug.Log("TP done, rb.pos=" + playerRb.position + " tr.pos=" + player.position);
         }
         else
         {
@@ -155,8 +145,6 @@ public class RoomManager : MonoBehaviour
             // Fallback si pas de Rigidbody2D (ne devrait pas arriver)
             player.position = spawn.position;
         }
-        
-        Debug.Log($"RoomManager: APRES TP - Player position: {player.position}");
     }
 
     private void WireDoorTriggers()
@@ -167,32 +155,5 @@ public class RoomManager : MonoBehaviour
         var triggers = currentRoomInstance.GetComponentsInChildren<DoorTrigger>(true);
         foreach (var t in triggers)
             t.SetManager(this);
-    }
-
-    private IEnumerator LogPlayerPositionAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        
-        if (player != null)
-        {
-            Debug.Log($"RoomManager: Player position après {delay}s: {player.position}");
-        }
-    }
-
-    private void LateUpdate()
-    {
-        // Log continu pour détecter les mouvements non désirés
-        if (player != null && currentRoomInstance != null)
-        {
-            Transform spawn = currentRoomInstance.transform.Find("PlayerSpawn");
-            if (spawn != null)
-            {
-                float distance = Vector3.Distance(player.position, spawn.position);
-                if (distance > 0.1f) // Si le player s'est éloigné du spawn
-                {
-                    Debug.Log($"RoomManager LateUpdate: Player a bougé! Distance du spawn: {distance}, Position actuelle: {player.position}, Position spawn: {spawn.position}");
-                }
-            }
-        }
     }
 }

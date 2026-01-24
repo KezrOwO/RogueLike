@@ -5,7 +5,9 @@ using UnityEngine;
 public class RunGenerator : MonoBehaviour
 {
     [SerializeField] private RunConfig runConfig;
+    [SerializeField] private int n = 0;
     private List<GameObject> generatedRooms;
+
 
     public List<GameObject> GenerateRun()
     {
@@ -18,10 +20,11 @@ public class RunGenerator : MonoBehaviour
 
         generatedRooms = new List<GameObject>();
         generatedRooms.Add(runConfig.RoomStart);
-
+        n = Random.Range(runConfig.MinRooms, runConfig.MaxRooms + 1 );
+        Debug.Log("RunGenerator: Generating run with " + n + " normal rooms.");
         if (runConfig.AllowDuplicateRooms)
         {
-            for (int i = 1; i < runConfig.RunLength - 1; i++)
+            for (int i = 1; i < n; i++)
             {
                 // Correction : choisir un prefab individuel dans la liste
                 if (runConfig.RoomPrefabs != null && runConfig.RoomPrefabs.Count > 0)
@@ -31,11 +34,12 @@ public class RunGenerator : MonoBehaviour
                     generatedRooms.Add(prefab);
                 }
             }
+            Debug.Log("RunGenerator: Generated rooms with duplicates allowed and with n room." + generatedRooms.Count);
         }
         else
         {
             var availableRooms = new List<GameObject>(runConfig.RoomPrefabs);
-            for (int i = 1; i < runConfig.RunLength - 1; i++)
+            for (int i = 1; i < n; i++)
             {
                 if (availableRooms.Count == 0)
                 {
@@ -60,12 +64,6 @@ public class RunGenerator : MonoBehaviour
             return false;
         }
 
-        // Vérifier que RunLength >= 2 (minimum Start + Boss)
-        if (runConfig.RunLength < 2)
-        {
-            Debug.LogError($"RunGenerator: RunLength must be at least 2 (Start + Boss). Current value: {runConfig.RunLength}");
-            return false;
-        }
 
         // Vérifier que RoomStart n'est pas null
         if (runConfig.RoomStart == null)
@@ -80,28 +78,6 @@ public class RunGenerator : MonoBehaviour
             Debug.LogError("RunGenerator: RoomBoss is null! Please assign a boss room prefab in RunConfig.");
             return false;
         }
-
-        // Vérifier que RoomPrefabs n'est pas vide si RunLength > 2
-        if (runConfig.RunLength > 2)
-        {
-            if (runConfig.RoomPrefabs == null || runConfig.RoomPrefabs.Count == 0)
-            {
-                Debug.LogError($"RunGenerator: RoomPrefabs is empty but RunLength is {runConfig.RunLength}. You need at least {runConfig.RunLength - 2} room prefabs for intermediate rooms.");
-                return false;
-            }
-
-            // Si duplicates désactivés, vérifier qu'il y a assez de salles uniques
-            if (!runConfig.AllowDuplicateRooms)
-            {
-                int requiredRooms = runConfig.RunLength - 2; // Nombre de salles intermédiaires
-                if (runConfig.RoomPrefabs.Count < requiredRooms)
-                {
-                    Debug.LogError($"RunGenerator: Not enough unique room prefabs. RunLength={runConfig.RunLength} requires {requiredRooms} intermediate rooms, but only {runConfig.RoomPrefabs.Count} prefabs available. Enable AllowDuplicateRooms or add more room prefabs.");
-                    return false;
-                }
-            }
-        }
-
         return true;
     }
 }
