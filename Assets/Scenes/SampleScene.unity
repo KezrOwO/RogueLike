@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runConfig: {fileID: 11400000, guid: 0a9e9751309dda640a0841dc973c5e74, type: 2}
+  n: 0
 --- !u!114 &580858652
 MonoBehaviour:
   m_ObjectHideFlags: 0
