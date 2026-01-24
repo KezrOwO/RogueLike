@@ -5,115 +5,137 @@ public class RoomManager : MonoBehaviour
 {
     [Header("Scene references")]
     [SerializeField] private Transform player;                 // Player transform
-    [SerializeField] private List<GameObject> roomsInOrder;    // Room1, Room2, Room3...
 
     [Header("Options")]
     [SerializeField] private bool requireRoomCleared = true;   
 
     private int currentRoomIndex = 0;
     private RoomController currentRoomController;
-    private int next => currentRoomIndex + 1;
     public static bool isRunCompleted = false;
 
     [SerializeField] private Camera mainCamera;
 
     private GameManager gameManager;
 
+    [SerializeField] private RunGenerator runGenerator;
+    private List<GameObject> runSequence;
+    private GameObject currentRoomInstance;
+    private bool isTransitioning = false;
 
     private void Awake()
     {
-        gameManager = FindObjectOfType<GameManager>();
 
+        gameManager = FindObjectOfType<GameManager>();
         if (player == null)
         {
             Debug.LogError("RoomManager: Player reference is missing.");
             return;
         }
 
-        if (roomsInOrder == null || roomsInOrder.Count == 0)
+        if(runGenerator == null)
         {
-            Debug.LogError("RoomManager: roomsInOrder is empty.");
-            return;
+                Debug.LogError("RoomManager: RunGenerator not found in the scene.");
+                return;
+        }
+        runSequence = runGenerator.GenerateRun();
+
+        if (runSequence != null && runSequence.Count >0)
+        {
+            Debug.Log("RoomManager: Run sequence generated with " + runSequence.Count + " rooms.");
         }
 
         
-        for (int i = 0; i < roomsInOrder.Count; i++)
-            roomsInOrder[i].SetActive(false);
-
-        ActivateRoom(0);
-
-        
-        WireAllDoorTriggers();
+        currentRoomIndex = 0;
+        SpawnRoom(runSequence[0]);
+        TeleportPlayerToSpawn();    
+        WireDoorTriggers();
     }
 
-    public void TryGoToNextRoom()
+    public void LoadNextRoom()
     {
-        if (currentRoomController == null)
+        if (currentRoomController == null )
             return;
 
         if (requireRoomCleared && !currentRoomController.IsCleared)
             return;
 
-        
+        if(isTransitioning)
+            return;
+            
+        isTransitioning = true;
 
-        if (next >= roomsInOrder.Count)
+        currentRoomIndex++;
+
+        if (currentRoomIndex >= runSequence.Count)
         {
             isRunCompleted = true;
+            isTransitioning = false;
+            Debug.Log("RoomManager: Run completed!");
             return;
         }
 
-        ActivateRoom(next);
+        if(currentRoomInstance != null)
+        {
+            Destroy(currentRoomInstance.gameObject);
+        }       
+
+        if(gameManager != null)
+        {
+            gameManager.DestroyProjectil();
+        }
+        SpawnRoom(runSequence[currentRoomIndex]); 
+        TeleportPlayerToSpawn();
+        WireDoorTriggers();
+        isTransitioning = false;
     }
 
-    private void ActivateRoom(int index)
+    private void SpawnRoom(GameObject roomPrefab)
     {
-        // Desactivate current room
-        if (index != currentRoomIndex && currentRoomIndex >= 0 && currentRoomIndex < roomsInOrder.Count)
-            roomsInOrder[currentRoomIndex].SetActive(false);
-            gameManager.DestroyProjectil();
+        if (roomPrefab == null)
+        {
+            Debug.LogError("RoomManager: Cannot spawn null room prefab.");
+            return;
+        }
 
-
-        currentRoomIndex = index;
-
-        GameObject roomGO = roomsInOrder[currentRoomIndex];
-        roomGO.SetActive(true);
-
-        // Get RoomController
-        currentRoomController = roomGO.GetComponent<RoomController>();
+        currentRoomInstance = Instantiate(roomPrefab, Vector3.zero, Quaternion.identity);
+        currentRoomController = currentRoomInstance.GetComponent<RoomController>();
         if (currentRoomController == null)
-            Debug.LogWarning($"RoomManager: No RoomController on {roomGO.name}");
+        {
+            Debug.LogWarning($"RoomManager: No RoomController on {roomPrefab.name}");
+        }
 
         if (mainCamera != null)
         {
             mainCamera.transform.position = new Vector3(
-                roomGO.transform.position.x,
-                roomGO.transform.position.y,
+                currentRoomInstance.transform.position.x,
+                currentRoomInstance.transform.position.y,
                 mainCamera.transform.position.z
             );
         }
+    }
 
+    private void TeleportPlayerToSpawn()
+    {
+        if (currentRoomInstance == null || player == null)
+            return;
 
-        // Spawn player at spawn point
-        Transform spawn = roomGO.transform.Find("PlayerSpawn");
+        Transform spawn = currentRoomInstance.transform.Find("PlayerSpawn");
         if (spawn == null)
         {
-            Debug.LogWarning($"RoomManager: PlayerSpawn not found in {roomGO.name} (expected child named 'PlayerSpawn').");
+            Debug.LogWarning($"RoomManager: PlayerSpawn not found in {currentRoomInstance.name}");
+            return;
         }
-        else
-        {
-            player.position = spawn.position;
-        }
+
+        player.position = spawn.position;
     }
 
-    private void WireAllDoorTriggers()
+    private void WireDoorTriggers()
     {
-        foreach (var room in roomsInOrder)
-        {
-            var triggers = room.GetComponentsInChildren<DoorTrigger>(true);
-            foreach (var t in triggers)
-                t.SetManager(this);
-        }
+        if (currentRoomInstance == null)
+            return;
+
+        var triggers = currentRoomInstance.GetComponentsInChildren<DoorTrigger>(true);
+        foreach (var t in triggers)
+            t.SetManager(this);
     }
-
-
 }

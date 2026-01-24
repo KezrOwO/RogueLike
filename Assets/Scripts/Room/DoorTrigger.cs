@@ -17,7 +17,10 @@ public class DoorTrigger : MonoBehaviour
         if (other.GetComponent<PlayerController>() == null)
             return;
 
-        roomManager?.TryGoToNextRoom();
+        if (roomManager != null)
+        {
+            roomManager.LoadNextRoom();
+        }
     }
 
     private void Update()
