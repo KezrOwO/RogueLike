@@ -31,7 +31,12 @@ public class EnemyBase : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         target = GameObject.FindGameObjectWithTag("Player").transform;
+        if(target == null)
+        {
+            return; 
+        }
     }
 
     // Update is called once per frame

@@ -62,6 +62,8 @@ public class PlayerController : MonoBehaviour
         {
             body.velocity = Vector2.zero;
         }
+
+        Debug.Log("FixedUpdate pos=" + transform.position);
     }
 
     void ProccessInput()

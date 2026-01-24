@@ -28,6 +28,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RoomStart
       objectReference: {fileID: 0}
+    - target: {fileID: 4962692513650685804, guid: 1dd3266c8409f5b4aaf4d9d2ceb9f9e7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8973139949410241034, guid: 1dd3266c8409f5b4aaf4d9d2ceb9f9e7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
