@@ -5,12 +5,18 @@ using UnityEngine;
 public class RoomController : MonoBehaviour
 {
     [SerializeField] private List<GameObject> enemiesInRoom;
-    [SerializeField] private int enemySpawnCount = 2;
     [SerializeField] private int enemyAliveCount;
-    [SerializeField] private GameObject[] enemies;
+    
     [SerializeField] private GameObject itemPickUpPrefab;
     [SerializeField] private float roomWidth = 28;
     [SerializeField] private float roomHeight = 15f;
+   
+    
+    [SerializeField] private int minEnemies = 3;
+    [SerializeField] private int maxEnemies = 6;
+    private Transform enemySpawnParent;
+    private Transform[] spawnEnemies;
+    [SerializeField] private GameObject[] enemiesPrefab;
 
     private enum States {Entering, Fighting, Cleared}
     private States currentState;
@@ -26,6 +32,13 @@ public class RoomController : MonoBehaviour
     private void Awake()
     {
         doors = transform.Find("Doors");
+        enemySpawnParent = transform.Find("EnemySpawns");
+
+        spawnEnemies = new Transform[enemySpawnParent.childCount];
+        for (int i = 0; i < enemySpawnParent.childCount; i++)
+        {
+            spawnEnemies[i] = enemySpawnParent.GetChild(i);
+        }
 
         if (doors == null)
         {
@@ -50,30 +63,58 @@ public class RoomController : MonoBehaviour
             Debug.Log("Enemies already spawned, skipping OnEnable spawn.");
             return;
         }
-
-        if (enemies == null || enemies.Length == 0)
-        {
-            Debug.LogError("Enemies array is empty! Please assign enemy prefabs in the Inspector.");
-            return;
-        }
-
         if (enemiesInRoom == null)
         {
             enemiesInRoom = new List<GameObject>();
         }
 
-        
-        for (int i = 0; i < enemySpawnCount; i++)
+        int enemyCount = Random.Range(minEnemies, maxEnemies + 1);
+
+        if(enemyCount > spawnEnemies.Length)
+        {
+            enemyCount = Mathf.Min(spawnEnemies.Length, enemyCount);
+        }
+
+        for (int i = spawnEnemies.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i+1);
+            Swap(spawnEnemies, i, j);
+        }
+
+        if(enemiesPrefab.Length == 0)
+        {
+            Debug.LogError("Enemies Prefab array is empty! Please assign enemy prefabs in the Inspector.");
+            return;
+        }
+        Debug.Log("nombre de prefab " + enemiesPrefab.Length );
+        for (int i = 0 ; i < enemyCount; i++)
+        {
+            Transform spawnPoint = spawnEnemies[i];
+            GameObject enemyPrefab = enemiesPrefab[Random.Range(0, enemiesPrefab.Length)];
+            GameObject enemyInstance = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+            enemyInstance.transform.SetParent(transform);
+            enemiesInRoom.Add(enemyInstance);
+
+        }
+
+      /*  for (int i = 0; i < enemySpawnCount; i++)
         {
             int randomEnemyIndex = Random.Range(0, enemies.Length);
             Vector3 randomPosition = GetRandomPositionInRoom();
             GameObject enemyInstance = Instantiate(enemies[randomEnemyIndex], randomPosition, Quaternion.identity);
             enemyInstance.transform.parent = transform;
             enemiesInRoom.Add(enemyInstance);
-        }
+        }*/
 
         hasSpawnedEnemies = true; 
         currentState = States.Fighting;
+    }
+
+    private void Swap(Transform[] array, int indexA, int indexB)
+    {
+        Transform temp = array[indexA];
+        array[indexA] = array[indexB];
+        array[indexB] = temp;
     }
 
     private void SetupDoorColliders()
