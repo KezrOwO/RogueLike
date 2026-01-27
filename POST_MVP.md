@@ -104,8 +104,9 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
 
 - Générer une séquence de salles automatiquement (Start → salles normales → Boss)
 - Varier la longueur de la run (min/max) et les layouts choisis
-- Préparer l’extension pour varier le contenu (ennemis/items) par salle
-- ✅ Terminé (génération des salles) / 🔄 En cours (contenu procédural si ajouté ensuite)
+- Générer dynamiquement le contenu des salles (ennemis) afin de varier la difficulté entre les runs
+- ✅ Terminé
+
 
 ---
 
@@ -121,6 +122,10 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
   - Une seule salle instanciée à la fois pour limiter la complexité (pas de backtracking), réduire les bugs et éviter la gestion de placement des rooms dans l’espace
 - Debug orienté développement :
   - logs clairs sur la séquence générée et les transitions
+- Génération procédurale des ennemis par salle :
+  - chaque salle définit uniquement des points de spawn (Transforms)
+  - le nombre d’ennemis est tiré aléatoirement (min/max)
+  - les ennemis sont instanciés au runtime à partir d’un pool de prefabs
 
 ---
 
@@ -133,6 +138,13 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
   - le max est exclusif pour les int, ce qui peut provoquer des erreurs de comptage
 - Bugs d’intégration lors du passage "rooms fixes" → "rooms instanciées" :
   - logique de transition, wiring des DoorTriggers uniquement sur la room instanciée, et gestion anti double transition
+- Erreur de configuration lors de la génération des rooms :
+  - une mauvaise référence de prefab dans le RunGenerator entraînait la génération répétée d’un seul type de salle, ce qui limitait indirectement la variation des ennemis générés
+- Gestion de la génération procédurale des ennemis :
+  - éviter la duplication de prefabs de salles pour chaque combinaison d’ennemis
+  - comprendre et corriger l’héritage involontaire des prefabs (parent → enfants)
+
+
 
 ---
 
@@ -149,6 +161,16 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
 - Sécurité :
   - validations de config (pool non vide, min/max cohérents)
   - prévention des doubles transitions
+- Correction de la configuration de génération :
+  - vérification et correction du pool de prefabs utilisés par le RunGenerator afin de garantir une réelle variété de salles
+  - validation visuelle et via logs que chaque room instanciée correspond bien au prefab attendu
+- Séparation claire des responsabilités des salles :
+  - salles Start, normales et Boss séparées en prefabs distincts
+  - seules les salles normales génèrent des ennemis procéduralement
+- Génération contrôlée des ennemis :
+  - sélection aléatoire de points de spawn sans doublons
+  - limitation du nombre d’ennemis au nombre de points disponibles
+
 
 ---
 
@@ -161,6 +183,10 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
 - Système extensible pour ajouter :
   - plus de layouts
   - génération procédurale du contenu (ennemis/items) par salle
+- Chaque salle normale génère dynamiquement :
+  - un nombre variable d’ennemis
+  - des positions de spawn différentes à chaque run
+- La difficulté varie naturellement au fil de la partie sans modifier les layouts
 
 ---
 
@@ -168,19 +194,9 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
 Ce jalon m’a appris l’importance de raisonner "runtime-first" sur Unity :
 les prefabs figent l’état des objets, et les références Inspector peuvent devenir fragiles lors de refactors ou d’instanciations dynamiques.
 
-### Extension prévue : Ennemis procéduraux (🔄 En cours)
+### Notes complémentaires
+La génération procédurale des ennemis a été intégrée directement au POST-MVP 3 afin de garantir une variation réelle du gameplay entre chaque run, sans multiplier les prefabs ni complexifier l’architecture existante.
 
-Dans la continuité de la génération procédurale des salles, une extension est prévue afin de varier également le contenu des rooms.
-
-- Chaque prefab de salle définit uniquement une structure et des points de spawn d’ennemis (Transforms)
-- Le nombre d’ennemis est déterminé dynamiquement par salle (min/max)
-- Les ennemis sont instanciés au runtime à partir d’une liste de prefabs possibles
-- Cette approche évite la multiplication de prefabs de salles pour chaque combinaison de difficulté
-
-Objectif :
-- Introduire une variation de difficulté entre les rooms
-- Préparer l’ajout de nouveaux types d’ennemis sans modifier la structure des salles
-- Garder un système extensible et lisible, compatible avec l’architecture existante
 
 
 ## POST-MVP 4 : Polissage UI + Feedback
