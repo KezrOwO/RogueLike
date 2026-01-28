@@ -14,8 +14,8 @@ public class RoomController : MonoBehaviour
     
     [SerializeField] private int baseMinEnemies = 2;
     [SerializeField] private int baseMaxEnemies = 4;
-    [SerializeField] private int minEnemyScaling = 2;
-    [SerializeField] private int maxEnemyScaling = 6;
+    [SerializeField] private int minEnemyScaling = 4;
+    [SerializeField] private int maxEnemyScaling = 7;
     [SerializeField] private int startEnemyCount = 2;
     [SerializeField] private int bossEnemyCount = 8;
     private Transform enemySpawnParent;
@@ -95,21 +95,26 @@ public class RoomController : MonoBehaviour
             enemiesInRoom = new List<GameObject>();
         }
 
+        difficultyCurve = new AnimationCurve(new Keyframe(0, 0), new Keyframe(0.6f, 0.55f),  new Keyframe(1.0f, 1.0f));
+        for (int i = 0; i < difficultyCurve.keys.Length; i++)
+        {
+            difficultyCurve.SmoothTangents(i, 0f);
+        }
+
         float progress = (float)normalIndex / Mathf.Max(1, normalTotalRooms - 1);
-        Debug.Log("Room Progress: " + progress.ToString("F2"));
         float difficultyMultiplier = difficultyCurve.Evaluate(progress);
-        Debug.Log("Difficulty Multiplier: " + difficultyMultiplier.ToString("F2"));
+
         float minEnemiesFloat = baseMinEnemies + difficultyMultiplier * minEnemyScaling;
-        Debug.Log("Min Enemies Float: " + minEnemiesFloat.ToString("F2"));
+
         float maxEnemiesFloat = baseMaxEnemies + difficultyMultiplier * maxEnemyScaling;
-        Debug.Log("Max Enemies Float: " + maxEnemiesFloat.ToString("F2"));
+
 
         int minEnemiesInt = Mathf.Clamp(Mathf.RoundToInt(minEnemiesFloat), 1, spawnEnemies.Length);
-        Debug.Log("Min Enemies Int: " + minEnemiesInt);
+
         int maxEnemiesInt = Mathf.Clamp(Mathf.RoundToInt(maxEnemiesFloat), minEnemiesInt, spawnEnemies.Length);
-        Debug.Log("Max Enemies Int: " + maxEnemiesInt);
+
         int enemyCount = Random.Range(minEnemiesInt, maxEnemiesInt + 1);
-        Debug.Log("Spawning " + enemyCount + " enemies in room.");  
+  
 
 
         for (int i = spawnEnemies.Length - 1; i > 0; i--)
@@ -124,7 +129,6 @@ public class RoomController : MonoBehaviour
             return;
         }
 
-        Debug.Log("nombre de prefab " + enemiesPrefab.Length);
         for (int i = 0; i < enemyCount; i++)
         {
             Transform spawnPoint = spawnEnemies[i];
@@ -133,7 +137,7 @@ public class RoomController : MonoBehaviour
             enemyInstance.transform.SetParent(transform);
             enemiesInRoom.Add(enemyInstance);
         }
-
+        Debug.Log("Spawned " + enemyCount + " enemies at room index." + normalIndex);
         hasSpawnedEnemies = true;
         currentState = States.Fighting;
     }
