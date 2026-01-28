@@ -12,8 +12,12 @@ public class RoomController : MonoBehaviour
     [SerializeField] private float roomHeight = 15f;
    
     
-    [SerializeField] private int minEnemies = 3;
-    [SerializeField] private int maxEnemies = 6;
+    [SerializeField] private int baseMinEnemies = 2;
+    [SerializeField] private int baseMaxEnemies = 4;
+    [SerializeField] private int minEnemyScaling = 2;
+    [SerializeField] private int maxEnemyScaling = 6;
+    [SerializeField] private int startEnemyCount = 2;
+    [SerializeField] private int bossEnemyCount = 8;
     private Transform enemySpawnParent;
     private Transform[] spawnEnemies;
     [SerializeField] private GameObject[] enemiesPrefab;
@@ -27,12 +31,23 @@ public class RoomController : MonoBehaviour
 
     private bool hasSpawnedEnemies = false; 
 
+    private int normalIndex;
+    private int normalTotalRooms;
+
+    [SerializeField] private AnimationCurve difficultyCurve;
+
     public bool IsCleared => currentState == States.Cleared;
 
     private void Awake()
     {
         doors = transform.Find("Doors");
         enemySpawnParent = transform.Find("EnemySpawns");
+
+        if(enemySpawnParent == null)
+        {
+            Debug.LogError("EnemySpawns parent not found!");
+            return;
+        }
 
         spawnEnemies = new Transform[enemySpawnParent.childCount];
         for (int i = 0; i < enemySpawnParent.childCount; i++)
@@ -51,62 +66,157 @@ public class RoomController : MonoBehaviour
 
     }
 
-    private void OnEnable()
+    // Set the room index and total normal rooms for difficulty scaling
+    // Start and end rooms are excluded from normal room count
+    // index is 1-based for normal rooms
+    // Example: For a run with 5 normal rooms, index 1-5, totalRooms = 7 (including start and end)
+    public void SetRoomIndex(int index, int totalRooms)
     {
-        CloseDoors();
-        
-        
+        normalIndex = index - 1;
+        normalTotalRooms = totalRooms - 2;
+    }
 
+    // Initialise la room et spawn les ennemis
+    // Doit être appelé par RoomManager après SetRoomIndex
+    public void InitRoom()
+    {
+        
         // Block multiple spawns
         if (hasSpawnedEnemies)
         {
-            Debug.Log("Enemies already spawned, skipping OnEnable spawn.");
+            Debug.Log("Enemies already spawned, skipping InitRoom spawn.");
             return;
         }
+
+        CloseDoors();
+
         if (enemiesInRoom == null)
         {
             enemiesInRoom = new List<GameObject>();
         }
 
-        int enemyCount = Random.Range(minEnemies, maxEnemies + 1);
+        float progress = (float)normalIndex / Mathf.Max(1, normalTotalRooms - 1);
+        Debug.Log("Room Progress: " + progress.ToString("F2"));
+        float difficultyMultiplier = difficultyCurve.Evaluate(progress);
+        Debug.Log("Difficulty Multiplier: " + difficultyMultiplier.ToString("F2"));
+        float minEnemiesFloat = baseMinEnemies + difficultyMultiplier * minEnemyScaling;
+        Debug.Log("Min Enemies Float: " + minEnemiesFloat.ToString("F2"));
+        float maxEnemiesFloat = baseMaxEnemies + difficultyMultiplier * maxEnemyScaling;
+        Debug.Log("Max Enemies Float: " + maxEnemiesFloat.ToString("F2"));
 
-        if(enemyCount > spawnEnemies.Length)
-        {
-            enemyCount = Mathf.Min(spawnEnemies.Length, enemyCount);
-        }
+        int minEnemiesInt = Mathf.Clamp(Mathf.RoundToInt(minEnemiesFloat), 1, spawnEnemies.Length);
+        Debug.Log("Min Enemies Int: " + minEnemiesInt);
+        int maxEnemiesInt = Mathf.Clamp(Mathf.RoundToInt(maxEnemiesFloat), minEnemiesInt, spawnEnemies.Length);
+        Debug.Log("Max Enemies Int: " + maxEnemiesInt);
+        int enemyCount = Random.Range(minEnemiesInt, maxEnemiesInt + 1);
+        Debug.Log("Spawning " + enemyCount + " enemies in room.");  
+
 
         for (int i = spawnEnemies.Length - 1; i > 0; i--)
         {
-            int j = Random.Range(0, i+1);
+            int j = Random.Range(0, i + 1);
             Swap(spawnEnemies, i, j);
         }
 
-        if(enemiesPrefab.Length == 0)
+        if (enemiesPrefab.Length == 0)
         {
             Debug.LogError("Enemies Prefab array is empty! Please assign enemy prefabs in the Inspector.");
             return;
         }
-        Debug.Log("nombre de prefab " + enemiesPrefab.Length );
-        for (int i = 0 ; i < enemyCount; i++)
+
+        Debug.Log("nombre de prefab " + enemiesPrefab.Length);
+        for (int i = 0; i < enemyCount; i++)
         {
             Transform spawnPoint = spawnEnemies[i];
             GameObject enemyPrefab = enemiesPrefab[Random.Range(0, enemiesPrefab.Length)];
             GameObject enemyInstance = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
             enemyInstance.transform.SetParent(transform);
             enemiesInRoom.Add(enemyInstance);
-
         }
 
-      /*  for (int i = 0; i < enemySpawnCount; i++)
-        {
-            int randomEnemyIndex = Random.Range(0, enemies.Length);
-            Vector3 randomPosition = GetRandomPositionInRoom();
-            GameObject enemyInstance = Instantiate(enemies[randomEnemyIndex], randomPosition, Quaternion.identity);
-            enemyInstance.transform.parent = transform;
-            enemiesInRoom.Add(enemyInstance);
-        }*/
+        hasSpawnedEnemies = true;
+        currentState = States.Fighting;
+    }
 
-        hasSpawnedEnemies = true; 
+    public void InitStartRoom()
+    {
+        if (hasSpawnedEnemies)
+        {
+            Debug.Log("Enemies already spawned, skipping InitRoom spawn.");
+            return;
+        }
+
+        CloseDoors();
+
+        if (enemiesInRoom == null)
+        {
+            enemiesInRoom = new List<GameObject>();
+        }
+       
+
+        int enemyCount = startEnemyCount;
+
+        for (int i = spawnEnemies.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            Swap(spawnEnemies, i, j);
+        }
+
+        if (enemiesPrefab.Length == 0)
+        {
+            Debug.LogError("Enemies Prefab array is empty! Please assign enemy prefabs in the Inspector.");
+            return;
+        }
+
+        Debug.Log("nombre de prefab " + enemiesPrefab.Length);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            Transform spawnPoint = spawnEnemies[i];
+            GameObject enemyPrefab = enemiesPrefab[Random.Range(0, enemiesPrefab.Length)];
+            GameObject enemyInstance = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+            enemyInstance.transform.SetParent(transform);
+            enemiesInRoom.Add(enemyInstance);
+        }
+
+        hasSpawnedEnemies = true;
+        currentState = States.Fighting;
+    }
+
+    public void InitEndRoom()
+    {
+        Debug.Log("Initializing End Room with Boss Enemies.");
+        if (hasSpawnedEnemies)
+        {
+            Debug.Log("Enemies already spawned, skipping InitRoom spawn.");
+            return;
+        }
+        CloseDoors();
+        if (enemiesInRoom == null)
+        {
+            enemiesInRoom = new List<GameObject>();
+        }
+
+        int enemyCount = bossEnemyCount;
+        for (int i = spawnEnemies.Length - 1; i > 0; i--)
+        {
+            int j = Random.Range(0, i + 1);
+            Swap(spawnEnemies, i, j);
+        }
+        if (enemiesPrefab.Length == 0)
+        {
+            Debug.LogError("Enemies Prefab array is empty! Please assign enemy prefabs in the Inspector.");
+            return;
+        }
+        Debug.Log("nombre de prefab " + enemiesPrefab.Length);
+        for (int i = 0; i < enemyCount; i++)
+        {
+            Transform spawnPoint = spawnEnemies[i];
+            GameObject enemyPrefab = enemiesPrefab[Random.Range(0, enemiesPrefab.Length)];
+            GameObject enemyInstance = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+            enemyInstance.transform.SetParent(transform);
+            enemiesInRoom.Add(enemyInstance);
+        }
+        hasSpawnedEnemies = true;
         currentState = States.Fighting;
     }
 
@@ -142,13 +252,6 @@ public class RoomController : MonoBehaviour
 
         doorBlockers = blockers.ToArray();
         doorTriggers = triggers.ToArray();
-    }
-
-    private Vector3 GetRandomPositionInRoom()
-    {
-        float randomX = Random.Range(-roomWidth / 2f, roomWidth / 2f);
-        float randomY = Random.Range(-roomHeight / 2f, roomHeight / 2f);
-        return transform.position + new Vector3(randomX, randomY, 0f);
     }
 
 

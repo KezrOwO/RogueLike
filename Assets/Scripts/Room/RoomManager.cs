@@ -46,9 +46,16 @@ public class RoomManager : MonoBehaviour
             Debug.Log("RoomManager: Run sequence generated with " + runSequence.Count + " rooms.");
         }
 
-        
+
+        if(runSequence == null || runSequence.Count == 0)
+            {
+            Debug.LogError("RoomManager: Run sequence is null or empty.");
+            return;
+        }
+
         currentRoomIndex = 0;
         SpawnRoom(runSequence[0]);
+        InitializeCurrentRoom();
         TeleportPlayerToSpawn();    
         WireDoorTriggers();
     }
@@ -85,11 +92,38 @@ public class RoomManager : MonoBehaviour
         {
             gameManager.DestroyProjectil();
         }
+        
         SpawnRoom(runSequence[currentRoomIndex]); 
+        InitializeCurrentRoom();
         TeleportPlayerToSpawn();
         WireDoorTriggers();
         isTransitioning = false;
 
+    }
+
+    private void InitializeCurrentRoom()
+    {
+        if (currentRoomController == null)
+        {
+            Debug.LogWarning("RoomManager: Cannot initialize room - RoomController is null.");
+            return;
+        }
+
+        int lastIndex = runSequence.Count - 1;
+
+        if (currentRoomIndex == 0)
+        {
+            currentRoomController.InitStartRoom();
+        }
+        else if (currentRoomIndex == lastIndex)
+        {
+            currentRoomController.InitEndRoom();
+        }
+        else
+        {
+            currentRoomController.SetRoomIndex(currentRoomIndex, runSequence.Count);
+            currentRoomController.InitRoom();
+        }
     }
 
     private void SpawnRoom(GameObject roomPrefab)
