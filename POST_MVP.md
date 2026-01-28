@@ -105,98 +105,114 @@ Mettre en place une génération de run dynamique afin de varier chaque partie, 
 - Générer une séquence de salles automatiquement (Start → salles normales → Boss)
 - Varier la longueur de la run (min/max) et les layouts choisis
 - Générer dynamiquement le contenu des salles (ennemis) afin de varier la difficulté entre les runs
+- Introduire une montée en difficulté progressive et contrôlée
 - ✅ Terminé
 
 
 ---
 
 ### Choix techniques
-- Génération procédurale "safe" par assemblage :
+- **Génération procédurale "safe" par assemblage** :
   - Les salles sont des prefabs pré-construits (layouts faits à la main)
-  - La run est une liste de prefabs générée au runtime (pool-based)
-- Séparation claire Data / Logique :
-  - `RunConfig` (ScriptableObject) contient les paramètres de génération (start, boss, pool, min/max rooms, doublons)
-  - `RunGenerator` construit la séquence de salles (sans instancier)
-  - `RoomManager` orchestre la run (instancie/détruit 1 salle à la fois, téléporte le player, gère les transitions)
-- Choix "1 room active at a time" :
-  - Une seule salle instanciée à la fois pour limiter la complexité (pas de backtracking), réduire les bugs et éviter la gestion de placement des rooms dans l’espace
-- Debug orienté développement :
-  - logs clairs sur la séquence générée et les transitions
-- Génération procédurale des ennemis par salle :
-  - chaque salle définit uniquement des points de spawn (Transforms)
-  - le nombre d’ennemis est tiré aléatoirement (min/max)
-  - les ennemis sont instanciés au runtime à partir d’un pool de prefabs
-
+  - La génération repose sur l’assemblage de ces prefabs plutôt que sur une génération géométrique brute
+- **Séparation claire Data / Logique** :
+  - `RunConfig` (ScriptableObject) contient les paramètres de génération (start, boss, pool de rooms, min/max rooms, doublons)
+  - `RunGenerator` construit la séquence de salles (liste logique, sans instanciation)
+  - `RoomManager` orchestre la run (instancie/détruit une salle à la fois, téléporte le player, gère les transitions)
+- **Choix architectural : "1 room active at a time"** :
+  - Une seule salle instanciée à la fois
+  - Pas de backtracking volontairement (run linéaire)
+  - Réduction drastique de la complexité (placement spatial, collisions, références croisées)
+- **Génération procédurale des ennemis par salle** :
+  - Chaque salle définit uniquement des points de spawn (Transforms)
+  - Le nombre d’ennemis est déterminé dynamiquement (min/max)
+  - Les ennemis sont instanciés au runtime à partir d’un pool de prefabs
+  - Les points de spawn sont mélangés afin d’éviter les doublons
+- **Montée en difficulté basée sur la progression** :
+  - La difficulté est calculée à partir d’un index de salle normalisé (`progress ∈ [0,1]`)
+  - Une `AnimationCurve` permet de contrôler finement la montée en difficulté sans modifier le code
+  - Le système reste indépendant du nombre total de salles générées
 ---
 
 ### Difficultés rencontrées
-- Piège Unity : les prefabs figent les transforms
-  - certains éléments de salle étaient sauvegardés en Z = -10 (comme la caméra), rendant la room invisible en GameView
-- Références Unity au runtime :
-  - une référence de Player assignée dans l’Inspector n’était pas fiable après refactor/procédural (ordre d’exécution + Rigidbody2D)
-- Compréhension des bornes de Random.Range :
-  - le max est exclusif pour les int, ce qui peut provoquer des erreurs de comptage
-- Bugs d’intégration lors du passage "rooms fixes" → "rooms instanciées" :
-  - logique de transition, wiring des DoorTriggers uniquement sur la room instanciée, et gestion anti double transition
-- Erreur de configuration lors de la génération des rooms :
-  - une mauvaise référence de prefab dans le RunGenerator entraînait la génération répétée d’un seul type de salle, ce qui limitait indirectement la variation des ennemis générés
-- Gestion de la génération procédurale des ennemis :
-  - éviter la duplication de prefabs de salles pour chaque combinaison d’ennemis
-  - comprendre et corriger l’héritage involontaire des prefabs (parent → enfants)
+- **Piège Unity : les prefabs figent les transforms**
+  - Certains éléments de salle avaient été sauvegardés avec un Z = -10 (hérité de la caméra)
+  - Les rooms devenaient invisibles en GameView une fois instanciées
+- **Références Unity au runtime**
+  - Une référence de Player assignée dans l’Inspector devenait invalide après refactor et génération procédurale
+  - Problème accentué par l’ordre d’exécution (`Awake` / `Start`) et le `Rigidbody2D`
+- **Compréhension des bornes de `Random.Range`**
+  - Le maximum est exclusif pour les `int`, ce qui a provoqué des erreurs de comptage initiales
+- **Bugs d’intégration lors du passage "rooms fixes" → "rooms instanciées"**
+  - Gestion des transitions
+  - Risque de double déclenchement des portes
+  - Nécessité de sécuriser l’ordre d’instanciation
+- **Erreur de configuration des prefabs**
+  - Une mauvaise référence dans le `RunGenerator` entraînait la génération répétée d’un seul prefab de salle
+  - Effet indirect : faible variation du contenu et des ennemis
+- **Gestion du contenu procédural**
+  - Éviter la multiplication de prefabs de salles pour chaque combinaison d’ennemis
+  - Comprendre l’impact de l’héritage de prefabs (parent → enfants) dans Unity
 
 
 
 ---
 
 ### Solutions apportées
-- Convention Z fixe :
-  - Caméra en Z = -10
-  - Gameplay / rooms / sprites en Z = 0
-- Références runtime robustes :
-  - récupération du Player au runtime via tag (pour éviter une référence figée/incorrecte)
-  - téléportation via Rigidbody2D (et reset si nécessaire)
-- Clarification des variables de génération :
-  - séparation entre nombre de rooms normales et ajout Start/Boss en dehors de la boucle
-  - ajout de min/max rooms et logs de génération
-- Sécurité :
-  - validations de config (pool non vide, min/max cohérents)
-  - prévention des doubles transitions
-- Correction de la configuration de génération :
-  - vérification et correction du pool de prefabs utilisés par le RunGenerator afin de garantir une réelle variété de salles
-  - validation visuelle et via logs que chaque room instanciée correspond bien au prefab attendu
-- Séparation claire des responsabilités des salles :
-  - salles Start, normales et Boss séparées en prefabs distincts
-  - seules les salles normales génèrent des ennemis procéduralement
-- Génération contrôlée des ennemis :
-  - sélection aléatoire de points de spawn sans doublons
-  - limitation du nombre d’ennemis au nombre de points disponibles
+- **Convention de profondeur (Z)** :
+  - Caméra fixée en Z = -10
+  - Gameplay / salles / entités en Z = 0
+- **Références runtime robustes** :
+  - Récupération du Player au runtime via tag (`FindGameObjectWithTag`)
+  - Téléportation via `Rigidbody2D` pour éviter les conflits physiques
+- **Clarification de la génération**
+  - Séparation explicite entre :
+    - Start room
+    - Rooms normales
+    - Boss room
+  - Le nombre de rooms normales est indépendant de Start/Boss
+- **Sécurisation du système**
+  - Validation des configurations (pool non vide, min/max cohérents)
+  - Protection contre les doubles transitions
+- **Correction des erreurs de configuration**
+  - Vérification systématique du pool de prefabs utilisé par le `RunGenerator`
+  - Ajout de logs pour visualiser la séquence réelle générée
+- **Génération contrôlée des ennemis**
+  - Shuffle des points de spawn
+  - Limitation du nombre d’ennemis au nombre de spawns disponibles
+  - Système extensible sans explosion du nombre de prefabs
 
 
 ---
 
 ### Résultat
 - À chaque lancement de partie :
-  - une run est générée dynamiquement avec une longueur variable
-  - la Start room apparaît en premier
-  - plusieurs rooms normales sont sélectionnées aléatoirement
-  - la Boss room est toujours en dernière
-- Système extensible pour ajouter :
-  - plus de layouts
-  - génération procédurale du contenu (ennemis/items) par salle
+  - Une run est générée dynamiquement avec une longueur variable
+  - La Start room apparaît toujours en premier
+  - Plusieurs rooms normales sont sélectionnées aléatoirement
+  - La Boss room est toujours en dernière
 - Chaque salle normale génère dynamiquement :
-  - un nombre variable d’ennemis
-  - des positions de spawn différentes à chaque run
-- La difficulté varie naturellement au fil de la partie sans modifier les layouts
+  - Un nombre variable d’ennemis
+  - Des positions de spawn différentes
+- La difficulté augmente naturellement au fil de la progression :
+  - Sans modifier les layouts
+  - Sans dépendre d’un nombre fixe de salles
+- Le système est prêt à accueillir :
+  - De nouveaux layouts
+  - De nouveaux types d’ennemis
+  - Des variations de difficulté plus avancées
 
 ---
 
 ### Notes
-Ce jalon m’a appris l’importance de raisonner "runtime-first" sur Unity :
+Ce jalon m’a appris l’importance de raisonner **runtime-first** sur Unity :  
 les prefabs figent l’état des objets, et les références Inspector peuvent devenir fragiles lors de refactors ou d’instanciations dynamiques.
 
-### Notes complémentaires
-La génération procédurale des ennemis a été intégrée directement au POST-MVP 3 afin de garantir une variation réelle du gameplay entre chaque run, sans multiplier les prefabs ni complexifier l’architecture existante.
 
+### Notes complémentaires
+La génération procédurale des ennemis a été intégrée directement au POST-MVP 3 afin de garantir une variation réelle du gameplay entre chaque run, sans multiplier les prefabs ni complexifier l’architecture existante.  
+
+Ce choix permet de conserver une base stable tout en préparant efficacement les étapes de polish et d’extension du jeu.
 
 
 ## POST-MVP 4 : Polissage UI + Feedback
