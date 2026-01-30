@@ -215,18 +215,60 @@ La génération procédurale des ennemis a été intégrée directement au POST-
 Ce choix permet de conserver une base stable tout en préparant efficacement les étapes de polish et d’extension du jeu.
 
 
-## POST-MVP 4 : Polissage UI + Feedback
+## POST-MVP 4 : Polish, UI & Feedback joueur
 
 ### Objectif
-- Interface utilisateur propre , avec des effets visuels et sonores
-- 📋 Prévue
+- Améliorer la lisibilité globale du jeu (combat, danger, progression)
+- Renforcer le ressenti joueur via des feedbacks visuels et sonores
+- Corriger les points de friction identifiés lors des tests
+- Donner une sensation de jeu plus cohérente et maîtrisée
+
+---
+
+### Axes de polish
+
+#### 🎨 Feedback visuel
+- Feedback de dégâts (flash, impact visuel, léger knockback)
+- Meilleure lisibilité des tirs ennemis (anticipation, timing)
+- Clarification des états importants (ennemis actifs, salle terminée)
+
+#### 🔊 Feedback sonore
+- Sons distincts pour :
+  - tirs
+  - dégâts subis
+  - élimination d’ennemis
+- Renforcement de l’impact sans surcharger le mix audio
+
+#### ⏱️ Rythme & pacing
+- Ajustement du timing des spawns ennemis
+- Micro-pause après la fin d’une salle pour laisser respirer le joueur
+- Progression de difficulté plus lisible d’une salle à l’autre
+
+#### 🤖 Comportement des ennemis (polish gameplay)
+- Ajustement des délais d’action pour rendre les ennemis plus lisibles
+- Comportements plus cohérents (distance, repositionnement simple)
+- Objectif : améliorer la perception de l’IA sans augmenter fortement la complexité technique
+
+---
 
 ### Choix techniques
-- ...
+- Améliorations légères et ciblées plutôt qu’ajout de nouvelles features
+- Réutilisation des systèmes existants (RoomManager, ennemis, projectiles)
+- Paramétrage fin (timings, valeurs) privilégié à des algorithmes complexes
+- Approche volontairement itérative basée sur le ressenti joueur
+
+---
 
 ### Difficultés rencontrées
-- …
-- …
+- Trouver le bon équilibre entre feedback visible et surcharge visuelle
+- Améliorer le comportement des ennemis sans casser la difficulté existante
+- Ajuster le rythme global sans rallonger artificiellement les runs
+- Comprendre que beaucoup de problèmes perçus venaient du feedback, pas du code
+
+---
 
 ### Notes
-- …
+- Cette phase a montré que le polish impacte fortement la qualité perçue du jeu
+- Une IA simple mais lisible est souvent plus efficace qu’une IA complexe
+- Le feedback joueur est un outil essentiel pour orienter les priorités
+- Cette étape conclut le projet en mettant l’accent sur l’expérience utilisateur

@@ -35,17 +35,17 @@ Le gameplay s'inspire de **The Binding of Isaac** pour la structure des salles e
 - Un ennemi plus tanky en guise de **boss**
 
 #### Salle & Génération
-- Plusieurs salles avec enchaînement
-- **Prévue** : génération procédurale simple par assemblage de salles prédéfinies
+- Run générée dynamiquement par assemblage de salles préfabriquées
+- Progression linéaire (Start → rooms normales → Boss), 1 salle active à la fois
 - Transitions via portes
 
 #### Items
 - **Augmentations disponibles** :
-  - HP up
-  - Damage up
-  - Speed up
-  - Attack speed up
-- Avec limites/caps
+- HP up
+- Damage up
+- Speed up
+- Attack speed up
+- Application via pickups (données en ScriptableObjects)
 - Changements visuels légers pour indiquer la récupération
 
 ---
@@ -94,9 +94,11 @@ Assets/
 
 ## 🚧 État Actuel
 
-**MVP** : En cours (itération 4 complétée)
+**MVP** : ✅ Terminé
 
-Pour le détail complet du planning et de l'avancement, voir [MVP.md](MVP.md)
+**Post-MVP** : Items ✅ · Boss ✅ · Génération procédurale ✅ · Polish/UI 🔄
+
+Pour le détail complet du planning et de l'avancement, voir [MVP.md](MVP.md) et [POST_MVP.md](POST_MVP.md)
 
 ---
 
@@ -153,18 +155,18 @@ Une fois le MVP terminé, la roadmap post-MVP prévoit :
 ### Post-MVP 2 : Boss Simple
 - Ennemi plus tanky et agressif
 - Combat final de run
-- 🔄 En cours 
+- ✅ Complétée 
 
 ### Post-MVP 3 : Génération Procédurale
 - Génération dynamique de salles
 - Variété de layouts
-- 📋 Prévue
+- ✅ Complétée
 
 ### Post-MVP 4 : Polissage UI + Feedback
 - Interface utilisateur propre
 - Effets visuels (VFX)
 - Effets sonores (SFX)
-- 📋 Prévue
+- 🔄 En cours
 ---
 
 ## 🎮 Contrôles
