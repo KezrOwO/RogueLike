@@ -626,17 +626,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesInRoom: []
-  enemySpawnCount: 2
   enemyAliveCount: 0
-  enemies: []
   itemPickUpPrefab: {fileID: 4736692766497755229, guid: 4e8e2475c1f6f7d4fbf22b61a5f8131f, type: 3}
   roomWidth: 10
   roomHeight: 10
-  minEnemies: 3
-  maxEnemies: 6
+  baseMinEnemies: 2
+  baseMaxEnemies: 4
+  minEnemyScaling: 2
+  maxEnemyScaling: 6
+  startEnemyCount: 2
+  bossEnemyCount: 8
   enemiesPrefab:
-  - {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
-  - {fileID: 8899703587885442562, guid: 098443dcabeb94346b7521851e919070, type: 3}
+  - {fileID: 345094970825128625, guid: 6db6ef48429022a48a781455a11361e8, type: 3}
+  - {fileID: 6468193560235824623, guid: 14b27ee63b3e0b9489379481ea89d7ad, type: 3}
+  - {fileID: 5023902304558614538, guid: f65a795fc30388d4d91e0fe741bf2cd6, type: 3}
+  difficultyCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3313022473525578976
 GameObject:
   m_ObjectHideFlags: 0

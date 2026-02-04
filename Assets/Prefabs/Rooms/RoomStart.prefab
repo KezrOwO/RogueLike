@@ -32,6 +32,10 @@ PrefabInstance:
       propertyPath: enemies.Array.data[1]
       value: 
       objectReference: {fileID: 6524927824428819541, guid: c7ccfd9b8e737554db710226765cf7b4, type: 3}
+    - target: {fileID: 2320185570613488041, guid: 1dd3266c8409f5b4aaf4d9d2ceb9f9e7, type: 3}
+      propertyPath: enemiesPrefab.Array.data[0]
+      value: 
+      objectReference: {fileID: 345094970825128625, guid: 6db6ef48429022a48a781455a11361e8, type: 3}
     - target: {fileID: 3049453863988074853, guid: 1dd3266c8409f5b4aaf4d9d2ceb9f9e7, type: 3}
       propertyPath: m_Name
       value: RoomStart
