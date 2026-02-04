@@ -248,6 +248,7 @@ Ce choix permet de conserver une base stable tout en préparant efficacement les
 - Ajustement des délais d’action pour rendre les ennemis plus lisibles
 - Comportements plus cohérents (distance, repositionnement simple)
 - Objectif : améliorer la perception de l’IA sans augmenter fortement la complexité technique
+- Introduction de nouveaux archétypes d’ennemis pour enrichir les situations de combat
 
 ---
 
@@ -264,7 +265,8 @@ Ce choix permet de conserver une base stable tout en préparant efficacement les
 - Améliorer le comportement des ennemis sans casser la difficulté existante
 - Ajuster le rythme global sans rallonger artificiellement les runs
 - Comprendre que beaucoup de problèmes perçus venaient du feedback, pas du code
-
+- Erreur d’architecture liée à l’utilisation de l’héritage et du système de composants Unity,
+  ayant provoqué des comportements conflictuels entre scripts
 ---
 
 ### Notes
@@ -272,3 +274,5 @@ Ce choix permet de conserver une base stable tout en préparant efficacement les
 - Une IA simple mais lisible est souvent plus efficace qu’une IA complexe
 - Le feedback joueur est un outil essentiel pour orienter les priorités
 - Cette étape conclut le projet en mettant l’accent sur l’expérience utilisateur
+- Cette phase a également permis de mieux comprendre les implications de l’héritage en C#
+  dans le contexte du modèle de composants Unity  
