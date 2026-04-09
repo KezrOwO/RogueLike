@@ -80,6 +80,13 @@ public class RoomManager : MonoBehaviour
             isRunCompleted = true;
             isTransitioning = false;
             Debug.Log("RoomManager: Run completed!");
+            
+            //  Appeler la victoire
+            if (gameManager != null)
+            {
+                gameManager.TriggerVictory();
+            }
+            
             return;
         }
 
